@@ -3,8 +3,7 @@
 # It works by setting the variable 'application' to a WSGI handler of some
 # description.
 #
-
-# +++++++++++ GENERAL DEBUGGING TIPS +++++++++++
+#+++++++++hello +++++++++++
 # getting imports and sys.path right can be fiddly!
 # We've tried to collect some general tips here:
 # https://help.pythonanywhere.com/pages/DebuggingImportError
