@@ -1,0 +1,2387 @@
+
+# This file contains the WSGI configuration required to serve up your
+# web application at http://kokina.pythonanywhere.com/
+# It works by setting the variable 'application' to a WSGI handler of some
+# description.
+#
+
+# +++++++++++ GENERAL DEBUGGING TIPS +++++++++++
+# getting imports and sys.path right can be fiddly!
+# We've tried to collect some general tips here:
+# https://help.pythonanywhere.com/pages/DebuggingImportError
+
+
+# +++++++++++ HELLO WORLD +++++++++++
+# A little pure-wsgi hello world we've cooked up, just
+# to prove everything works.  You should delete this
+# code to get your own working.
+
+
+
+import MySQLdb
+from urllib.parse import parse_qs
+
+
+HOMEPAGE = """<html>
+<head>
+  <title>
+    LiveLoveParty
+  </title>
+</head>
+
+<body>
+<!--Background Picture-->
+<style>
+body {
+  background-image: url('https://www.party.de/magazin/wp-content/uploads/2020/05/Online-Party.jpg');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+}
+</style>
+
+
+<!--Title of the page-->
+<style>
+h1 {
+  position: absolute;
+  left: 340px;
+  top: 225px;
+  text-align:center;
+}
+</style>
+
+<h1 style="font-size:105px;"> <center>LiveLoveParty</center> </h1>
+
+
+
+<!-- Sidebar -->
+<div class="w3-sidebar w3-bar-block w3-border-right" style="display:none" id="mySidebar">
+  <button onclick="w3_close()" class="w3-bar-item w3-large">Close &times;</button>
+
+  <a href=""http://wichelhaus.pythonanywhere.com/" class="w3-bar-item w3-button"> Home </a>
+  <a href=""http://kokina.pythonanywhere.com/about" class="w3-bar-item w3-button"> About us </a>
+</div>
+
+<div class="w3-main" style="margin-left:0px">
+
+<!-- Page Content -->
+<div class="w3-teal">
+  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">☰</button>
+  <div class="w3-container">
+  </div>
+
+<script>
+function w3_open() {
+  document.getElementById("mySidebar").style.display = "block";
+}
+
+function w3_close() {
+  document.getElementById("mySidebar").style.display = "none";
+}
+</script>
+
+
+<!--Links for "join and host" button-->
+
+<style>
+a:link, a:visited {
+  background-color: lightgray;
+  color: black;
+  border: 2px goldenrod;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+
+a:hover, a:active {
+  background-color: goldenrod;
+  color: white;
+}
+
+h2 {
+  position: absolute;
+  left: 405px;
+  top: 457px;
+}
+h3 {
+  position: absolute;
+  left: 700px;
+  top: 450px;
+}
+</style>
+<!-- Link reinmachen von Julia -->
+
+<center> <h2 style="font-size: 35px;"> <a href="http://wichelhaus.pythonanywhere.com/joinevent" target="_blank">Join an event</a></h2> </center>
+
+
+<center> <h3 style="font-size: 35px;"> <a href="http://wichelhaus.pythonanywhere.com/hostevent" target="_blank">Host an event</a></h3>  </center>
+</div>
+</div>
+
+
+</body>
+</html>
+"""
+
+
+JOIN_EVENT_START = """<html>
+
+<head>
+   <title>
+     LiveLoveParty - Join an event
+   </title>
+ </head>
+
+
+<!-- TITLE -->
+<style>
+h1 {
+  position: absolute;
+  left: 490px;
+  top: 50px;
+  font-size:70px;
+}
+</style>
+
+<h1 style="color:white"> <center> Join an event </center></h1>
+
+
+
+
+<!-- SIDEBAR -->
+
+<div class="w3-sidebar w3-bar-block w3-border-right" style="display:none" id="mySidebar">
+  <button onclick="w3_close()" class="w3-bar-item w3-large">Close &times;</button>
+
+  <a href="http://wichelhaus.pythonanywhere.com/" class="w3-bar-item w3-button">Home </a>
+  <a href="http://wichelhaus.pythonanywhere.com/about" class="w3-bar-item w3-button"> About us</a>
+
+</div>
+
+<div class="w3-main" style="margin-left:0px">
+</div>
+
+
+
+<!-- PAGE CONTENT -->
+
+<div class="w3-teal">
+  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">☰</button>
+  <div class="w3-container">
+  </div>
+  </div>
+
+<script>
+function w3_open() {
+  document.getElementById("mySidebar").style.display = "block";
+}
+
+function w3_close() {
+  document.getElementById("mySidebar").style.display = "none";
+}
+</script>
+
+
+
+
+<!-- BACKGROUND -->
+
+<style>
+body {
+  background-image: url('https://www.party.de/magazin/wp-content/uploads/2020/05/Online-Party.jpg');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+}
+</style>
+
+
+<br><br><br><br><br><br><br><br><br><br>
+
+
+
+
+<!-- IMAGES IN TABLES -->
+
+
+<table width= 100% border=0>
+
+<tr>
+
+
+<th>
+  <a href="http://wichelhaus.pythonanywhere.com/club">
+    <img src="https://www.rbb24.de/content/dam/rbb/rbb/rbb24/2020/2020_10/dpa-account/119763669.jpg.jpg/size=708x398.jpg" alt="CLUB" width="300" height="200">
+  </a>
+ <div style="color:white">CLUB</div>
+</th>
+
+
+<th>
+  <a href="http://wichelhaus.pythonanywhere.com/bar">
+    <img src="https://static.duesseldorf-tonight.de/thumbs/img/News/8/03/05/10/p/p_pano/team-der-boston-bar-zeigt-kampfgeist-aufgeben-kommt-nicht-in-frage-1005038.jpg" alt="BAR" width="300" height="200">
+  </a>
+  <div style="color:white">BAR</div>
+</th>
+
+
+<th>
+  <a href="http://wichelhaus.pythonanywhere.com/art">
+    <img src="https://iadsb.tmgrup.com.tr/61c5f5/1200/627/0/512/800/930?u=https://idsb.tmgrup.com.tr/2019/12/22/1577016108432.jpg" alt="ART GALLERY" width="300" height="200">
+  </a>
+  <div style="color:white">ART GALLERY</div>
+</th>
+
+<!--finished-->
+<th>
+  <a href="http://wichelhaus.pythonanywhere.com/dinner">
+    <img src="https://www.bistum-aachen.de/export/sites/Bistum-Aachen/portal-bistum-aachen/.galleries/images/rawpixel-754045-unsplash.jpg_792247553.jpg" alt="RUNNING DINNER" width="300" height="200">
+  </a>
+ <div style="color:white">DINNER</div>
+</th>
+
+</tr>
+
+
+
+<!-- NEW TABLE ROW -->
+
+<tr>
+
+
+<th>
+  <a href="http://wichelhaus.pythonanywhere.com/houseparty">
+    <img src="https://www.sickchirpse.com/wp-content/uploads/2020/05/party.jpeg" alt="HOUSE PARTY" width="300" height="200">
+  </a>
+  <div style="color:white">HOUSE PARTY</div>
+</th>
+
+
+<th>
+  <a href="http://wichelhaus.pythonanywhere.com/gamenight">
+    <img src="https://t3.ftcdn.net/jpg/02/75/50/00/360_F_275500010_PI6TG940EeoAgVsT1w7Sd8MvNhtekRB0.jpg" alt="SHISHA LOUNGE" width="300" height="200">
+  </a>
+  <div style="color:white">GAME NIGHT</div>
+</th>
+
+
+<th>
+  <a href="http://wichelhaus.pythonanywhere.com/karaoke">
+    <img src="https://www.delamar.de/wp-content/uploads/2020/03/karaoke.jpg" alt="KARAOKE" width="300" height="200">
+  </a>
+  <div style="color:white">KARAOKE</div>
+</th>
+
+
+<th>
+  <a href="http://wichelhaus.pythonanywhere.com/concert">
+    <img src="https://assets.rebelmouse.io/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpbWFnZSI6Imh0dHBzOi8vbWVkaWEucmJsLm1zL2ltYWdlP3U9JTJGZmlsZXMlMkYyMDE2JTJGMTAlMkYwMSUyRjYzNjEwODk0NjAzMzUxNzg4My00NzIxOTY5ODZfQWxnaWVyczEtbWluLmpwZyZobz1odHRwcyUzQSUyRiUyRmF6NjE2NTc4LnZvLm1zZWNuZC5uZXQmcz01MTQmaD0wNDEzMzliMjMxNjMxMDFlNWE2ZWZjZWQ4ZWMwM2RiZDM0ZWVhODEzNThiNzRkMmJmYTI2OWUxZThiODUyYmRkJnNpemU9OTgweCZjPTIwMzYyMzI3MTEiLCJleHBpcmVzX2F0IjoxNjc2NTY3NzQ1fQ.1ppCkdXwhiuxZNKdA4DXb8y6K8AH7eF5sijkls3TRvg/img.jpg?width=1200&amp;height=628" alt="CONCERT" width="300" height="200">
+  </a>
+  <div style="color:white">CONCERT</div>
+</th>
+
+</tr>
+</table>
+
+
+</html>
+"""
+
+HOST_EVENT_START = """<html>
+
+ <head>
+   <title>
+     LiveLoveParty - Host an event
+   </title>
+ </head>
+
+ <style>
+body {
+  background-image: url('https://www.party.de/magazin/wp-content/uploads/2020/05/Online-Party.jpg');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+h1 {
+  position: absolute;
+  left: 450px;
+  top: 50px;
+  font-size:70px;
+}
+</style>
+
+<h1 style="color:white"> <center>  Host an event </center></h1>
+
+
+
+<!-- Sidebar -->
+<div class="w3-sidebar w3-bar-block w3-border-right" style="display:none" id="mySidebar">
+  <button onclick="w3_close()" class="w3-bar-item w3-large">Close &times;</button>
+
+  <a href="http://wichelhaus.pythonanywhere.com/" class="w3-bar-item w3-button">Home </a>
+  <a href="http://wichelhaus.pythonanywhere.com/about" class="w3-bar-item w3-button"> About us</a>
+</div>
+
+<div class="w3-main" style="margin-left:0px">
+
+
+<!-- Page Content -->
+<div class="w3-teal">
+  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">☰</button>
+  <div class="w3-container">
+  </div>
+  </div>
+
+<script>
+function w3_open() {
+  document.getElementById("mySidebar").style.display = "block";
+}
+
+function w3_close() {
+  document.getElementById("mySidebar").style.display = "none";
+}
+</script>
+
+
+<br><br><br><br><br><br><br><br><br><br><br>
+<form method = "GET" action = '/Insert'>
+      <input type="text" name = "Event_Name" placeholder="Event Name" >
+      <input type="text" name = "Event_Type"  placeholder="Event Type" >
+      <input type="text" name = "Host"  placeholder="Host" >
+      <input type="text" name = "Participants "  placeholder="Participants" >
+      <input type="text" name = "Date_And_Time"  placeholder="Date and Time" >
+      <input type="text" name = "Location" placeholder="Location" >
+      <input type="text" name = "Email" placeholder="Email" >
+      <input type="text" name = "Price" placeholder="Price" >
+      <input type="submit" value = "Insert" ></input>
+      </form>
+
+
+
+   <br><br>
+ <hr>
+
+<!--Table of Host-->
+
+
+  <table width= 100% border=1>
+  <tr>
+    <th> <b> <span style="color:white">Event Name</span> </b> </th>
+    <th> <b> <span style="color:white">Event Type</span> </b> </th>
+    <th> <b> <span style="color:white">Host</span> </b> </th>
+    <th><b> <span style="color:white">Participants</span></b></th>
+    <th> <b> <span style="color:white">Date and Time</span></b></th>
+    <th> <b> <span style="color:white">Location</span></b></th>
+    <th> <b> <span style="color:white">Email</span></b></th>
+    <th> <b> <span style="color:white">Price</span></b></th>
+  </tr>
+
+"""
+HOST_EVENT_END = """
+
+  </table>
+
+  br>
+  <form action="/" method="Get" target="_self">
+        <br>
+
+        <input type="submit" value="Home">
+
+      </form>
+  </div>
+ <hr>
+
+</html>
+"""
+
+ABOUT = """<html>
+
+<Head>
+  <title>
+    LiveLoveParty-About us
+  </title>
+</Head>
+
+<body>
+
+<!--Background Picture-->
+<style>
+body {
+  background-image: url('https://www.party.de/magazin/wp-content/uploads/2020/05/Online-Party.jpg');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+}
+</style>
+<!-- Sidebar -->
+<div class="w3-sidebar w3-bar-block w3-border-right" style="display:none" id="mySidebar">
+  <button onclick="w3_close()" class="w3-bar-item w3-large">Close &times;</button>
+
+  <a href="http://wichelhaus.pythonanywhere.com/" class="w3-bar-item w3-button">Home </a>
+  <a href="http://wichelhaus.pythonanywhere.com/about" class="w3-bar-item w3-button"> About</a>
+</div>
+
+<div class="w3-main" style="margin-left:0px">
+  </div>
+
+<!-- Page Content -->
+<div class="w3-teal">
+  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">☰</button>
+  <div class="w3-container">
+  </div>
+  </div>
+
+
+<script>
+function w3_open() {
+  document.getElementById("mySidebar").style.display = "block";
+}
+
+function w3_close() {
+  document.getElementById("mySidebar").style.display = "none";
+}
+</script>
+
+
+ <!-- GIF-->
+<nav>
+  <br>
+  <br>
+  <br>
+    <br>
+     <br>
+      <br>
+      <br>
+      <br>
+      <br><br><br><br><br><br><br>
+  <img src="https://media4.giphy.com/media/Rkzqt6BWKta5qrXppM/giphy.gif" width="490px" height="250 px">
+</nav>
+
+
+<!--Positions,size and color of text-->
+<style>
+h1 {
+  position: absolute;
+  left: 400px;
+  top: 50px;
+  font-size:90px;
+  color:white;
+}
+
+h2 {
+  position: absolute;
+  left: 560px;
+  top: 170px;
+  font-size:50px;
+  color:white;
+}
+
+article  {
+  position: absolute;
+  left: 530px;
+  top: 320px;
+  font-size:27px;
+  color:white;
+}
+</style>
+
+<h1>LiveLoveParty</h1>
+
+
+<!--Headline for text-->
+  <h2>-About us-</h2>
+
+
+<article>
+<!--Description-->
+<p>
+Our goal is to connect you with the best people and give you a wonderful evening at the event of your choice. Also we're dedicated to offer a space online for presenting your event and inviting new people.<br>
+<br> We hope you enjoy and have great time with love your LiveLoveParty team:<br>
+<br>Rani, Fabian, Polina, Beatrice, Julia and Johanna
+</p>
+</article>
+
+</body>
+</html>
+"""
+
+CLUB_START = """<html>
+<head>
+   <title>
+     LiveLoveParty - Join an event at a club
+   </title>
+ </head>
+
+<!-- TITLE -->
+
+<style>
+h1 {
+  position: absolute;
+  left: 450px;
+  top: 50px;
+  font-size:70px;
+}
+</style>
+
+<h1 style="color:white"> <center>  Join an event - CLUB </center></h1>
+
+
+
+
+
+<!-- SIDEBAR -->
+
+<div class="w3-sidebar w3-bar-block w3-border-right" style="display:none" id="mySidebar">
+  <button onclick="w3_close()" class="w3-bar-item w3-large">Close &times;</button>
+
+  <a href="http://wichelhaus.pythonanywhere.com/" class="w3-bar-item w3-button">Home </a>
+  <a href="http://wichelhaus.pythonanywhere.com/about" class="w3-bar-item w3-button"> About us</a>
+</div>
+
+<div class="w3-main" style="margin-left:0px">
+</div>
+
+<!-- PAGE CONTENT -->
+
+<div class="w3-teal">
+  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">☰</button>
+  <div class="w3-container">
+  </div>
+  </div>
+
+<script>
+function w3_open() {
+  document.getElementById("mySidebar").style.display = "block";
+}
+
+function w3_close() {
+  document.getElementById("mySidebar").style.display = "none";
+}
+</script>
+
+
+
+
+<!-- BACKGROUND -->
+
+<style>
+body {
+  background-image: url('https://www.party.de/magazin/wp-content/uploads/2020/05/Online-Party.jpg');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+}
+</style>
+
+
+<br><br><br><br><br><br><br><br><br><br><br>
+
+<!-- SEARCH BAR -->
+
+<form action="" method="GET">
+<input type="text" placeholder="Search..">
+<input type="submit" value="Search in CLUB">
+</form>
+
+<br><br>
+
+
+
+
+
+<!--EVENT TABLE -->
+
+<hr>
+<table width=100% border=1>
+<tr style="color:white">
+<th>ID</th>
+<th>Event Name</th>
+<th>Host</th>
+<th>Participants</th>
+<th>Date and Time</th>
+<th>Location</th>
+<th>Email</th>
+<th>Price</th>
+</tr>
+
+"""
+CLUB_END = """
+
+</table>
+
+
+<table border=1>
+<tr style="color:white">
+<th></th>
+</tr>
+
+
+</table>
+<hr>
+
+
+
+<br><br>
+
+
+
+
+<!--- INSERT BARS FOR ATTENDEE-->
+
+<div class="container">
+<form>
+
+  <div class="wrapper">
+    <p style="color:white">Please remember! You need to be at least 18 to join:)</p>
+    <p style="color:white">Please insert to join the event and contact the host via email:</p>
+    <div class="search-container">
+      <input type="text" class="search" placeholder="First Name">
+      <input type="text" class="date-from" placeholder="Last Name">
+      <input type="text" class="date-to" placeholder="Email">
+      <button type="submit" class="button">Insert</button>
+    </div>
+  </div>
+</form>
+</div>
+
+
+</html>
+"""
+
+BAR = """<html>
+
+ <head>
+   <title>
+     LiveLoveParty - Join an event at a bar
+   </title>
+ </head>
+<!-- TITLE -->
+
+<style>
+h1 {
+  position: absolute;
+  left: 450px;
+  top: 50px;
+  font-size:70px;
+}
+</style>
+
+<h1 style="color:white"> <center>  Join an event - BAR </center></h1>
+
+
+
+
+
+<!-- SIDEBAR -->
+
+<div class="w3-sidebar w3-bar-block w3-border-right" style="display:none" id="mySidebar">
+  <button onclick="w3_close()" class="w3-bar-item w3-large">Close &times;</button>
+
+  <a href="http://wichelhaus.pythonanywhere.com/" class="w3-bar-item w3-button">Home </a>
+  <a href="http://wichelhaus.pythonanywhere.com/about" class="w3-bar-item w3-button"> About us</a>
+</div>
+
+<div class="w3-main" style="margin-left:0px">
+</div>
+
+<!-- PAGE CONTENT -->
+
+<div class="w3-teal">
+  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">☰</button>
+  <div class="w3-container">
+  </div>
+  </div>
+
+<script>
+function w3_open() {
+  document.getElementById("mySidebar").style.display = "block";
+}
+
+function w3_close() {
+  document.getElementById("mySidebar").style.display = "none";
+}
+</script>
+
+
+
+
+<!-- BACKGROUND -->
+
+<style>
+body {
+  background-image: url('https://www.party.de/magazin/wp-content/uploads/2020/05/Online-Party.jpg');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+}
+</style>
+
+
+<br><br><br><br><br><br><br><br><br><br><br>
+
+<!-- SEARCH BAR -->
+
+<form action="" method="GET">
+<input type="text" placeholder="Search..">
+<input type="submit" value="Search in BAR">
+</form>
+
+<br><br>
+
+
+
+
+
+<!--EVENT TABLE -->
+
+<hr>
+<table width=100% border=1>
+<tr style="color:white">
+<th>ID</th>
+<th>Event Name</th>
+<th>Host</th>
+<th>Participants</th>
+<th>Date and Time</th>
+<th>Location</th>
+<th>Email</th>
+<th>Price</th>
+</tr>
+
+<tr style="color:white">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+
+<tr style="color:white">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+
+<tr style="color:white">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+
+<tr style="color:white">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+
+<tr style="color:white">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+
+</table>
+
+
+<table border=1>
+<tr style="color:white">
+<th></th>
+</tr>
+</table>
+<hr>
+
+
+
+<br><br>
+
+
+
+
+<!--- INSERT BARS FOR ATTENDEE-->
+
+<div class="container">
+<form>
+
+  <div class="wrapper">
+    <p style="color:white">Please remember! You need to be at least 18 to join:)</p>
+    <p style="color:white">Please insert to join the event and contact the host via email:</p>
+    <div class="search-container">
+      <input type="text" class="search" placeholder="First Name">
+      <input type="text" class="date-from" placeholder="Last Name">
+      <input type="text" class="date-to" placeholder="Email">
+      <button type="submit" class="button">Insert</button>
+    </div>
+  </div>
+</form>
+</div>
+
+
+</html>
+"""
+
+ART = """<html>
+
+ <head>
+   <title>
+     LiveLoveParty - Join an event at an art gallery
+   </title>
+ </head>
+<!-- TITLE -->
+
+<style>
+h1 {
+  position: absolute;
+  left: 300px;
+  top: 50px;
+  font-size:70px;
+}
+</style>
+
+<h1 style="color:white"> <center>  Join an event - ART GALLERY </center></h1>
+
+
+
+
+
+<!-- SIDEBAR -->
+
+<div class="w3-sidebar w3-bar-block w3-border-right" style="display:none" id="mySidebar">
+  <button onclick="w3_close()" class="w3-bar-item w3-large">Close &times;</button>
+
+  <a href="http://wichelhaus.pythonanywhere.com/" class="w3-bar-item w3-button">Home </a>
+  <a href="http://wichelhaus.pythonanywhere.com/about" class="w3-bar-item w3-button"> About us</a>
+</div>
+
+<div class="w3-main" style="margin-left:0px">
+</div>
+
+<!-- PAGE CONTENT -->
+
+<div class="w3-teal">
+  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">☰</button>
+  <div class="w3-container">
+  </div>
+  </div>
+
+<script>
+function w3_open() {
+  document.getElementById("mySidebar").style.display = "block";
+}
+
+function w3_close() {
+  document.getElementById("mySidebar").style.display = "none";
+}
+</script>
+
+
+
+
+<!-- BACKGROUND -->
+
+<style>
+body {
+  background-image: url('https://www.party.de/magazin/wp-content/uploads/2020/05/Online-Party.jpg');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+}
+</style>
+
+
+<br><br><br><br><br><br><br><br><br><br><br>
+
+<!-- SEARCH BAR -->
+
+<form action="" method="GET">
+<input type="text" placeholder="Search..">
+<input type="submit" value="Search in ART GALLERY">
+</form>
+
+<br><br>
+
+
+
+
+
+<!--EVENT TABLE -->
+
+<hr>
+<table width=100% border=1>
+<tr style="color:white">
+<th>ID</th>
+<th>Event Name</th>
+<th>Host</th>
+<th>Participants</th>
+<th>Date and Time</th>
+<th>Location</th>
+<th>Email</th>
+<th>Price</th>
+</tr>
+
+<tr style="color:white">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+
+<tr style="color:white">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+
+<tr style="color:white">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+
+<tr style="color:white">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+
+<tr style="color:white">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+
+</table>
+
+
+<table border=1>
+<tr style="color:white">
+<th></th>
+</tr>
+</table>
+<hr>
+
+
+
+<br><br>
+
+
+
+
+<!--- INSERT BARS FOR ATTENDEE-->
+
+<div class="container">
+<form>
+
+  <div class="wrapper">
+    <p style="color:white">Please remember! You need to be at least 18 to join:)</p>
+    <p style="color:white">Please insert to join the event and contact the host via email:</p>
+    <div class="search-container">
+      <input type="text" class="search" placeholder="First Name">
+      <input type="text" class="date-from" placeholder="Last Name">
+      <input type="text" class="date-to" placeholder="Email">
+      <button type="submit" class="button">Insert</button>
+    </div>
+  </div>
+</form>
+</div>
+
+
+</html>
+"""
+
+DINNER = """<html>
+
+<head>
+   <title>
+     LiveLoveParty - Join a dinner
+   </title>
+ </head>
+
+<!-- TITLE -->
+
+<style>
+h1 {
+  position: absolute;
+  left: 410px;
+  top: 50px;
+  font-size:70px;
+}
+</style>
+
+<h1 style="color:white"> <center>  Join an event - DINNER </center></h1>
+
+
+
+
+
+<!-- SIDEBAR -->
+
+<div class="w3-sidebar w3-bar-block w3-border-right" style="display:none" id="mySidebar">
+  <button onclick="w3_close()" class="w3-bar-item w3-large">Close &times;</button>
+
+  <a href="http://wichelhaus.pythonanywhere.com/" class="w3-bar-item w3-button">Home </a>
+  <a href="http://wichelhaus.pythonanywhere.com/about" class="w3-bar-item w3-button"> About us</a>
+</div>
+
+<div class="w3-main" style="margin-left:0px">
+</div>
+
+<!-- PAGE CONTENT -->
+
+<div class="w3-teal">
+  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">☰</button>
+  <div class="w3-container">
+  </div>
+  </div>
+
+<script>
+function w3_open() {
+  document.getElementById("mySidebar").style.display = "block";
+}
+
+function w3_close() {
+  document.getElementById("mySidebar").style.display = "none";
+}
+</script>
+
+
+
+
+<!-- BACKGROUND -->
+
+<style>
+body {
+  background-image: url('https://www.party.de/magazin/wp-content/uploads/2020/05/Online-Party.jpg');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+}
+</style>
+
+
+<br><br><br><br><br><br><br><br><br><br><br>
+
+<!-- SEARCH BAR -->
+
+<form action="" method="GET">
+<input type="text" placeholder="Search..">
+<input type="submit" value="Search in DINNER">
+</form>
+
+<br><br>
+
+
+
+
+
+<!--EVENT TABLE -->
+
+<hr>
+<table width=100% border=1>
+<tr style="color:white">
+<th>ID</th>
+<th>Event Name</th>
+<th>Host</th>
+<th>Participants</th>
+<th>Date and Time</th>
+<th>Location</th>
+<th>Email</th>
+<th>Price</th>
+</tr>
+
+<tr style="color:white">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+
+<tr style="color:white">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+
+<tr style="color:white">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+
+<tr style="color:white">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+
+<tr style="color:white">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+
+</table>
+
+
+<table border=1>
+<tr style="color:white">
+<th></th>
+</tr>
+</table>
+<hr>
+
+
+
+<br><br>
+
+
+
+
+<!--- INSERT BARS FOR ATTENDEE-->
+
+<div class="container">
+<form>
+
+  <div class="wrapper">
+    <p style="color:white">Please remember! You need to be at least 18 to join:)</p>
+    <p style="color:white">Please insert to join the event and contact the host via email:</p>
+    <div class="search-container">
+      <input type="text" class="search" placeholder="First Name">
+      <input type="text" class="date-from" placeholder="Last Name">
+      <input type="text" class="date-to" placeholder="Email">
+      <button type="submit" class="button">Insert</button>
+    </div>
+  </div>
+</form>
+</div>
+
+
+</html>
+"""
+
+HOUSEPARTY = """<html>
+
+<head>
+   <title>
+     LiveLoveParty - Join a houseparty
+   </title>
+ </head>
+
+<!-- TITLE -->
+
+<style>
+h1 {
+  position: absolute;
+  left: 350px;
+  top: 50px;
+  font-size:70px;
+}
+</style>
+
+<h1 style="color:white"> <center>  Join an event - HOUSE PARTY </center></h1>
+
+
+
+
+
+<!-- SIDEBAR -->
+
+<div class="w3-sidebar w3-bar-block w3-border-right" style="display:none" id="mySidebar">
+  <button onclick="w3_close()" class="w3-bar-item w3-large">Close &times;</button>
+
+  <a href="http://wichelhaus.pythonanywhere.com/" class="w3-bar-item w3-button">Home </a>
+  <a href="http://wichelhaus.pythonanywhere.com/about" class="w3-bar-item w3-button"> About us</a>
+</div>
+
+<div class="w3-main" style="margin-left:0px">
+</div>
+
+<!-- PAGE CONTENT -->
+
+<div class="w3-teal">
+  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">☰</button>
+  <div class="w3-container">
+  </div>
+  </div>
+
+<script>
+function w3_open() {
+  document.getElementById("mySidebar").style.display = "block";
+}
+
+function w3_close() {
+  document.getElementById("mySidebar").style.display = "none";
+}
+</script>
+
+
+
+
+<!-- BACKGROUND -->
+
+<style>
+body {
+  background-image: url('https://www.party.de/magazin/wp-content/uploads/2020/05/Online-Party.jpg');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+}
+</style>
+
+
+<br><br><br><br><br><br><br><br><br><br><br>
+
+<!-- SEARCH BAR -->
+
+<form action="" method="GET">
+<input type="text" placeholder="Search..">
+<input type="submit" value="Search in HOUSE PARTY">
+</form>
+
+<br><br>
+
+
+
+
+
+<!--EVENT TABLE -->
+
+<hr>
+<table width=100% border=1>
+<tr style="color:white">
+<th>ID</th>
+<th>Event Name</th>
+<th>Host</th>
+<th>Participants</th>
+<th>Date and Time</th>
+<th>Location</th>
+<th>Email</th>
+<th>Price</th>
+</tr>
+
+<tr style="color:white">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+
+<tr style="color:white">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+
+<tr style="color:white">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+
+<tr style="color:white">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+
+<tr style="color:white">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+
+</table>
+
+
+<table border=1>
+<tr style="color:white">
+<th></th>
+</tr>
+</table>
+<hr>
+
+
+
+<br><br>
+
+
+
+
+<!--- INSERT BARS FOR ATTENDEE-->
+
+<div class="container">
+<form>
+
+  <div class="wrapper">
+    <p style="color:white">Please remember! You need to be at least 18 to join:)</p>
+    <p style="color:white">Please insert to join the event and contact the host via email:</p>
+    <div class="search-container">
+      <input type="text" class="search" placeholder="First Name">
+      <input type="text" class="date-from" placeholder="Last Name">
+      <input type="text" class="date-to" placeholder="Email">
+      <button type="submit" class="button">Insert</button>
+    </div>
+  </div>
+</form>
+</div>
+
+
+</html>
+"""
+
+GAMENIGHT = """<html>
+
+
+<head>
+   <title>
+     LiveLoveParty - Join game night
+   </title>
+ </head>
+
+<!-- TITLE -->
+
+<style>
+h1 {
+  position: absolute;
+  left: 360px;
+  top: 50px;
+  font-size:70px;
+}
+</style>
+
+<h1 style="color:white"> <center>Join an event - GAME NIGHT</center></h1>
+
+
+
+
+
+<!-- SIDEBAR -->
+
+<div class="w3-sidebar w3-bar-block w3-border-right" style="display:none" id="mySidebar">
+  <button onclick="w3_close()" class="w3-bar-item w3-large">Close &times;</button>
+
+  <a href="http://wichelhaus.pythonanywhere.com/" class="w3-bar-item w3-button">Home </a>
+  <a href="http://wichelhaus.pythonanywhere.com/about" class="w3-bar-item w3-button"> About us</a>
+</div>
+
+<div class="w3-main" style="margin-left:0px">
+</div>
+
+<!-- PAGE CONTENT -->
+
+<div class="w3-teal">
+  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">☰</button>
+  <div class="w3-container">
+  </div>
+  </div>
+
+<script>
+function w3_open() {
+  document.getElementById("mySidebar").style.display = "block";
+}
+
+function w3_close() {
+  document.getElementById("mySidebar").style.display = "none";
+}
+</script>
+
+
+
+
+<!-- BACKGROUND -->
+
+<style>
+body {
+  background-image: url('https://www.party.de/magazin/wp-content/uploads/2020/05/Online-Party.jpg');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+}
+</style>
+
+
+<br><br><br><br><br><br><br><br><br><br><br>
+
+<!-- SEARCH BAR -->
+
+<form action="" method="GET">
+<input type="text" placeholder="Search..">
+<input type="submit" value="Search in GAME NIGHT">
+</form>
+
+<br><br>
+
+
+
+
+
+<!--EVENT TABLE -->
+
+<hr>
+<table width=100% border=1>
+<tr style="color:white">
+<th>ID</th>
+<th>Event Name</th>
+<th>Host</th>
+<th>Participants</th>
+<th>Date and Time</th>
+<th>Location</th>
+<th>Email</th>
+<th>Price</th>
+</tr>
+
+<tr style="color:white">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+
+<tr style="color:white">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+
+<tr style="color:white">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+
+<tr style="color:white">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+
+<tr style="color:white">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+
+</table>
+
+
+<table border=1>
+<tr style="color:white">
+<th></th>
+</tr>
+</table>
+<hr>
+
+
+
+<br><br>
+
+
+
+
+<!--- INSERT BARS FOR ATTENDEE-->
+
+<div class="container">
+<form>
+
+  <div class="wrapper">
+    <p style="color:white">Please remember! You need to be at least 18 to join:)</p>
+    <p style="color:white">Please insert to join the event and contact the host via email:</p>
+    <div class="search-container">
+      <input type="text" class="search" placeholder="First Name">
+      <input type="text" class="date-from" placeholder="Last Name">
+      <input type="text" class="date-to" placeholder="Email">
+      <button type="submit" class="button">Insert</button>
+    </div>
+  </div>
+</form>
+</div>
+
+
+</html>
+"""
+
+CARAOKE = """<html>
+
+ <head>
+   <title>
+     LiveLoveParty - Join karaoke
+   </title>
+ </head>
+
+<!-- TITLE -->
+
+<style>
+h1 {
+  position: absolute;
+  left: 340px;
+  top: 50px;
+  font-size:70px;
+}
+</style>
+
+<h1 style="color:white"> <center>  Join an event - KARAOKE</center></h1>
+
+
+
+
+
+<!-- SIDEBAR -->
+
+<div class="w3-sidebar w3-bar-block w3-border-right" style="display:none" id="mySidebar">
+  <button onclick="w3_close()" class="w3-bar-item w3-large">Close &times;</button>
+
+  <a href="http://wichelhaus.pythonanywhere.com/" class="w3-bar-item w3-button">Home </a>
+  <a href="http://wichelhaus.pythonanywhere.com/about" class="w3-bar-item w3-button"> About us</a>
+</div>
+
+<div class="w3-main" style="margin-left:0px">
+</div>
+
+<!-- PAGE CONTENT -->
+
+<div class="w3-teal">
+  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">☰</button>
+  <div class="w3-container">
+  </div>
+  </div>
+
+<script>
+function w3_open() {
+  document.getElementById("mySidebar").style.display = "block";
+}
+
+function w3_close() {
+  document.getElementById("mySidebar").style.display = "none";
+}
+</script>
+
+
+
+
+<!-- BACKGROUND -->
+
+<style>
+body {
+  background-image: url('https://www.party.de/magazin/wp-content/uploads/2020/05/Online-Party.jpg');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+}
+</style>
+
+
+<br><br><br><br><br><br><br><br><br><br><br>
+
+<!-- SEARCH BAR -->
+
+<form action="" method="GET">
+<input type="text" placeholder="Search..">
+<input type="submit" value="Search in KARAOKE">
+</form>
+
+<br><br>
+
+
+
+
+
+<!--EVENT TABLE -->
+
+<hr>
+<table width=100% border=1>
+<tr style="color:white">
+<th>ID</th>
+<th>Event Name</th>
+<th>Host</th>
+<th>Participants</th>
+<th>Date and Time</th>
+<th>Location</th>
+<th>Email</th>
+<th>Price</th>
+</tr>
+
+<tr style="color:white">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+
+<tr style="color:white">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+
+<tr style="color:white">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+
+<tr style="color:white">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+
+<tr style="color:white">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+
+</table>
+
+
+<table border=1>
+<tr style="color:white">
+<th></th>
+</tr>
+</table>
+<hr>
+
+
+
+<br><br>
+
+
+
+
+<!--- INSERT BARS FOR ATTENDEE-->
+
+<div class="container">
+<form>
+
+  <div class="wrapper">
+    <p style="color:white">Please remember! You need to be at least 18 to join:)</p>
+    <p style="color:white">Please insert to join the event and contact the host via email:</p>
+    <div class="search-container">
+      <input type="text" class="search" placeholder="First Name">
+      <input type="text" class="date-from" placeholder="Last Name">
+      <input type="text" class="date-to" placeholder="Email">
+      <button type="submit" class="button">Insert</button>
+    </div>
+  </div>
+</form>
+</div>
+
+
+</html>
+"""
+
+CONCERT = """<html>
+
+<head>
+   <title>
+     LiveLoveParty - Join a concert
+   </title>
+ </head>
+
+<!-- TITLE -->
+
+<style>
+h1 {
+  position: absolute;
+  left: 360px;
+  top: 50px;
+  font-size:70px;
+}
+</style>
+
+<h1 style="color:white"> <center>  Join an event - CONCERT </center></h1>
+
+
+
+
+
+<!-- SIDEBAR -->
+
+<div class="w3-sidebar w3-bar-block w3-border-right" style="display:none" id="mySidebar">
+  <button onclick="w3_close()" class="w3-bar-item w3-large">Close &times;</button>
+
+  <a href="http://wichelhaus.pythonanywhere.com/" class="w3-bar-item w3-button">Home </a>
+  <a href="http://wichelhaus.pythonanywhere.com/about" class="w3-bar-item w3-button"> About us</a>
+</div>
+
+<div class="w3-main" style="margin-left:0px">
+</div>
+
+<!-- PAGE CONTENT -->
+
+<div class="w3-teal">
+  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">☰</button>
+  <div class="w3-container">
+  </div>
+  </div>
+
+<script>
+function w3_open() {
+  document.getElementById("mySidebar").style.display = "block";
+}
+
+function w3_close() {
+  document.getElementById("mySidebar").style.display = "none";
+}
+</script>
+
+
+
+
+<!-- BACKGROUND -->
+
+<style>
+body {
+  background-image: url('https://www.party.de/magazin/wp-content/uploads/2020/05/Online-Party.jpg');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+}
+</style>
+
+
+<br><br><br><br><br><br><br><br><br><br><br>
+
+<!-- SEARCH BAR -->
+
+<form action="" method="GET">
+<input type="text" placeholder="Search..">
+<input type="submit" value="Search in CONCERT">
+</form>
+
+<br><br>
+
+
+
+
+
+<!--EVENT TABLE -->
+
+<hr>
+<table width=100% border=1>
+<tr style="color:white">
+<th>ID</th>
+<th>Event Name</th>
+<th>Host</th>
+<th>Participants</th>
+<th>Date and Time</th>
+<th>Location</th>
+<th>Email</th>
+<th>Price</th>
+</tr>
+
+<tr style="color:white">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+
+<tr style="color:white">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+
+<tr style="color:white">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+
+<tr style="color:white">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+
+<tr style="color:white">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+
+</table>
+
+
+<table border=1>
+<tr style="color:white">
+<th></th>
+</tr>
+</table>
+<hr>
+
+
+
+<br><br>
+
+
+
+
+<!--- INSERT BARS FOR ATTENDEE-->
+
+<div class="container">
+<form>
+
+  <div class="wrapper">
+    <p style="color:white">Please remember! You need to be at least 18 to join:)</p>
+    <p style="color:white">Please insert to join the event and contact the host via email:</p>
+    <div class="search-container">
+      <input type="text" class="search" placeholder="First Name">
+      <input type="text" class="date-from" placeholder="Last Name">
+      <input type="text" class="date-to" placeholder="Email">
+      <button type="submit" class="button">Insert</button>
+    </div>
+  </div>
+</form>
+</div>
+
+
+</html>
+"""
+
+
+def executeSQLCommand (sql_command):
+
+    ##########################
+    # Connect to the MySQL DB
+    ##########################
+
+    password = "Uniisttoll123" # this is your MySQL database password, NOT the password you use when you log into PythonAnywhere! I told you to write it down somewhere... >:->
+    results = ()
+
+    # you'll find the info you need to enter in your Databases Tab on PythonAnywhere
+    db = MySQLdb.connect("Wichelhaus.mysql.pythonanywhere-services.com","Wichelhaus",password, "Wichelhaus$EmployeeDB")
+
+
+    cursor = db.cursor()
+
+    try:
+        cursor.execute(sql_command)  # Execute the SQL command
+        results = cursor.fetchall()  # Fetch all the rows in a list of lists.
+        db.commit() # only necessary if the command changes the DB, but hey...
+    except:
+        db.rollback() # if stuff went wrong, no change to the DB should be made
+        print ("+++++++++ Error: unable to fetch data from database")
+    db.close()
+    return results
+
+
+###################################################
+#
+#Main funfction
+#
+###################################################
+
+def application(environ, start_response):
+    if environ.get('PATH_INFO') == '/':
+        status = '200 OK'
+        content = HOMEPAGE
+
+    elif environ.get('PATH_INFO') == '/joinevent':
+        status = '200 OK'
+        content = JOIN_EVENT_START
+
+        #construct an HTML that has the results from the SELECT statment mixed in
+
+
+    elif environ.get('PATH_INFO') == '/hostevent':
+        status = '200 OK'
+        # connet to SQL data base
+        sql_cmd = "SELECT Eventi.Event_Name, Eventi.Event_Type, Eventi.Host, Eventi.Participants, Eventi.Date_And_Time, Eventi.Location, Eventi.Email, Eventi.Price FROM Eventi"
+        print ("++++++++++++++++++", sql_cmd)
+        Eventi_from_db = executeSQLCommand (sql_cmd)
+
+
+
+        Eventi_table_string = ""
+        for Eventis_record in Eventi_from_db:
+            # a record is a LIST of values (one value per column), so we need to access each value separately.
+            # This follows the sequence in the SELECT statement above, starting with 0!
+            Event_Name = str (Eventis_record[0]) # employee_record[0] includes the FirstName value
+            Event_Type = str (Eventis_record[1]) # employee_record[1] includes the LastName value
+            Host = str (Eventis_record[2])
+            Participants = str (Eventis_record[3])
+            Date_And_Time = str (Eventis_record[4])
+            Location = str (Eventis_record[5])
+            Price = str (Eventis_record[6])
+            Email = str (Eventis_record[7])
+
+            Eventi_table_string += "<tr>"
+            Eventi_table_string += "<td>"
+            Eventi_table_string += Event_Name
+            Eventi_table_string += "</td>"
+            Eventi_table_string += "<td>"
+            Eventi_table_string += Event_Type
+            Eventi_table_string += "</td>"
+            Eventi_table_string += "<td>"
+            Eventi_table_string += Host
+            Eventi_table_string += "</td>"
+            Eventi_table_string += "<td>"
+            Eventi_table_string += Participants
+            Eventi_table_string += "</td>"
+            Eventi_table_string += "<td>"
+            Eventi_table_string += Date_And_Time
+            Eventi_table_string += "</td>"
+            Eventi_table_string += "<td>"
+            Eventi_table_string += Location
+            Eventi_table_string += "</td>"
+            Eventi_table_string += "<td>"
+            Eventi_table_string += Price
+            Eventi_table_string += "</td>"
+            Eventi_table_string += "<td>"
+            Eventi_table_string += Email
+            Eventi_table_string += "</td>"
+            Eventi_table_string += "<tr>"
+
+
+
+            # Print fetched employee_record, just so we see it
+            print ("++++++++++++++++++", Event_Name, Event_Type, Host, Participants, Date_And_Time, Location, Price, Email )
+
+        content = HOST_EVENT_START + Eventi_table_string + HOST_EVENT_END
+
+
+        ##################### INSERT ######################
+
+    elif environ.get('PATH_INFO') == '/Insert':
+        status = '200 OK'
+        print ("###################  INSERT PAGE ########################")
+
+
+        #print ("+++++++++++ SQL command +++++ ", sql_cmd)
+
+        # get the user input from the HTTP query string for = Event_Name
+        HttpQuery = parse_qs(environ['QUERY_STRING'])
+
+        userinput_Event_Name = HttpQuery.get('Event_Name', ['%'])[0]
+
+        userinput_Event_Type = HttpQuery.get('Event_Type', ['%'])[0]
+
+        userinput_Host = HttpQuery.get('Host', ['%'])[0]
+
+        userinput_Participants = HttpQuery.get('Participants', ['%'])[0]
+
+        userinput_Date_And_Time = HttpQuery.get('Date_And_Time', ['%'])[0]
+
+        userinput_Location = HttpQuery.get('Location', ['%'])[0]
+
+        userinput_Email = HttpQuery.get('Email', ['%'])[0]
+
+        userinput_Price = HttpQuery.get('Price', ['%'])[0]
+
+
+
+
+        # construct the SQL command (this time it's an INSERT statement)
+        sql_cmd = "INSERT INTO Eventi (Event_Name, Event_Type, Host, Participants, Date_And_Time, Location, Email, Price ) VALUES ('" +userinput_Event_Name+"', '"+userinput_Event_Type+"', '"+userinput_Host+"', '"+str(userinput_Participants)+"','"+str(userinput_Date_And_Time)+"', '"+userinput_Location+"',  '"+userinput_Email+"', '"+str(userinput_Price)+"')"
+
+        #sql_cmd = "INSERT INTO Event_ (Event_Name, Event_Type, Host, Participants, Date_And_Time, Location, Price, Email) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+        #val = [
+        #("Time to Rock", "Concert", "Rockpalace Tübingen", "120", "02.06.2021 19:30", "Tübingen", "rockpalace@gmail.com", "15"),
+        #("Quiet Lane", "Concert", "Johannes Reising", "200", "20.05.2021 20:00", "Stuttgart", "Reising.94@web.de", "12,60"),
+        #("House Party", "Party", "James Reed", "20", "15.05.2021 18:00", "Reutlingen", "James.reed@gmail.com", "10"),
+        #("After Work Party", "Party", "Lara Tann", "30", "10.06.2021 21:00", "Reutlingen", "Lara-Tann@yahoo.com", "10"),
+        #("Club-party", "Party", "Club Stuttgart", "60", "01.06.2021 21:00", "Stuttgart", "Stuttgart.Club@gmx.com", "12"),
+
+
+
+        print ("+++++++++++ SQL command +++++ ", sql_cmd)
+
+        executeSQLCommand(sql_cmd)
+
+        # #### Just display all messages in the DB to the user (to indicate that the insert has indeed happened)
+
+        # send a SQL command (selecting all messages from the Message Table) to the SQL Server
+        sql_cmd = "SELECT Eventi.Event_Name, Eventi.Event_Type, Eventi.Host, Eventi.Participants, Eventi.Date_And_Time, Eventi.Location, Eventi.Email, Eventi.Price FROM Eventi"
+
+        #print ("+++++++++++ SQL command +++++ ", sql_cmd)
+
+        Eventi_from_db = executeSQLCommand(sql_cmd)
+
+        # display the result (each author and message) formatted for html
+
+        Eventi_table_string = ""
+        for Eventis_record in Eventi_from_db:
+            # a record is a LIST of values (one value per column), so we need to access each value separately.
+            # This follows the sequence in the SELECT statement above, starting with 0!
+            Event_Name = str (Eventis_record[0]) # employee_record[0] includes the FirstName value
+            Event_Type = str (Eventis_record[1]) # employee_record[1] includes the LastName value
+            Host = str (Eventis_record[2])
+            Participants = str (Eventis_record[3])
+            Date_And_Time = str (Eventis_record[4])
+            Location = str (Eventis_record[5])
+            Price = str (Eventis_record[6])
+            Email = str (Eventis_record[7])
+
+            Eventi_table_string += "<tr>"
+            Eventi_table_string += "<td>"
+            Eventi_table_string += Event_Name
+            Eventi_table_string += "</td>"
+            Eventi_table_string += "<td>"
+            Eventi_table_string += Event_Type
+            Eventi_table_string += "</td>"
+            Eventi_table_string += "<td>"
+            Eventi_table_string += Host
+            Eventi_table_string += "</td>"
+            Eventi_table_string += "<td>"
+            Eventi_table_string += Participants
+            Eventi_table_string += "</td>"
+            Eventi_table_string += "<td>"
+            Eventi_table_string += Date_And_Time
+            Eventi_table_string += "</td>"
+            Eventi_table_string += "<td>"
+            Eventi_table_string += Location
+            Eventi_table_string += "</td>"
+            Eventi_table_string += "<td>"
+            Eventi_table_string += Price
+            Eventi_table_string += "</td>"
+            Eventi_table_string += "<td>"
+            Eventi_table_string += Email
+            Eventi_table_string += "</td>"
+            Eventi_table_string += "<tr>"
+
+            print ("++++++++++++++++++", Event_Name, Event_Type, Host, Participants, Date_And_Time, Location, Price, Email )
+
+
+
+        content = HOST_EVENT_START + Eventi_table_string + HOST_EVENT_END
+
+    elif environ.get('PATH_INFO') == '/club':
+        status = '200 OK'
+
+
+        print ("############Club page#############")
+
+        sql_cmd = "SELECT Eventi.ID, Eventi.Event_Name, Eventi.Host, Eventi.Participants, Eventi.Date_And_Time, Eventi.Location, Eventi.Email, Eventi.Price FROM Eventi"
+        print ("+++++++++++ SQL command +++++ ", sql_cmd)
+
+        Eventi_from_db = executeSQLCommand(sql_cmd)
+
+        Eventi_table_string = ""
+        for Eventis_record in Eventi_from_db:
+            # a record is a LIST of values (one value per column), so we need to access each value separately.
+            # This follows the sequence in the SELECT statement above, starting with 0!
+            ID = str (Eventis_record[0])
+            Event_Name = str (Eventis_record[1]) # employee_record[0] includes the FirstName value # employee_record[1] includes the LastName value
+            Host = str (Eventis_record[2])
+            Participants = str (Eventis_record[3])
+            Date_And_Time = str (Eventis_record[4])
+            Location = str (Eventis_record[5])
+            Price = str (Eventis_record[6])
+            Email = str (Eventis_record[7])
+
+            Eventi_table_string += "<tr>"
+            Eventi_table_string += "<td>"
+            Eventi_table_string += ID
+            Eventi_table_string += "</td>"
+            Eventi_table_string += "<td>"
+            Eventi_table_string += Event_Name
+            Eventi_table_string += "</td>"
+            Eventi_table_string += "<td>"
+            Eventi_table_string += Host
+            Eventi_table_string += "</td>"
+            Eventi_table_string += "<td>"
+            Eventi_table_string += Participants
+            Eventi_table_string += "</td>"
+            Eventi_table_string += "<td>"
+            Eventi_table_string += Date_And_Time
+            Eventi_table_string += "</td>"
+            Eventi_table_string += "<td>"
+            Eventi_table_string += Location
+            Eventi_table_string += "</td>"
+            Eventi_table_string += "<td>"
+            Eventi_table_string += Price
+            Eventi_table_string += "</td>"
+            Eventi_table_string += "<td>"
+            Eventi_table_string += Email
+            Eventi_table_string += "</td>"
+            Eventi_table_string += "<tr>"
+
+            print ("++++++++++HTML string ++++++++", ID, Event_Name, Host, Participants, Date_And_Time, Location, Price, Email )
+
+
+
+        content = CLUB_START+ Eventi_table_string  + CLUB_END
+
+
+    elif environ.get('PATH_INFO') == '/SEARCH':
+        status = '200 OK'
+
+
+        print ("###################  SEARCH PAGE ########################")
+        # get the input that the user typed into the HTML search text box
+        HttpQuery = parse_qs(environ['QUERY_STRING'])
+        userinput = HttpQuery.get('searchstring', ['%'])[0]
+
+
+        # modify the sql statement so that the user input is somehow in there
+        # send a SQL command (selecting the wanted messages from the Message Table) to the SQL Server
+        sql_cmd = "SELECT Eventi.ID, Eventi.Event_Name, Eventi.Host, Eventi.Participants, Eventi.Date_And_Time, Eventi.Location, Eventi.Email, Eventi.Price FROM Eventi WHERE Eventi.ID like '" + userinput + "'"
+        print ("+++++++++++ SQL command +++++ ", sql_cmd)
+
+        Eventi_from_db = executeSQLCommand(sql_cmd)
+
+        # display the result (each author and message) formatted for html
+
+        Eventi_table_string = ""
+        for Eventis_record in Eventi_from_db:
+            # a record is a LIST of values (one value per column), so we need to access each value separately.
+            # This follows the sequence in the SELECT statement above, starting with 0!
+            ID = str (Eventis_record[0])
+            Event_Name = str (Eventis_record[1]) # employee_record[0] includes the FirstName value# employee_record[1] includes the LastName value
+            Host = str (Eventis_record[2])
+            Participants = str (Eventis_record[3])
+            Date_And_Time = str (Eventis_record[4])
+            Location = str (Eventis_record[5])
+            Price = str (Eventis_record[6])
+            Email = str (Eventis_record[7])
+
+            Eventi_table_string += "<tr>"
+            Eventi_table_string += "<td>"
+            Eventi_table_string += ID
+            Eventi_table_string += "</td>"
+            Eventi_table_string += "<td>"
+            Eventi_table_string += Event_Name
+            Eventi_table_string += "</td>"
+            Eventi_table_string += "<td>"
+            Eventi_table_string += Host
+            Eventi_table_string += "</td>"
+            Eventi_table_string += "<td>"
+            Eventi_table_string += Participants
+            Eventi_table_string += "</td>"
+            Eventi_table_string += "<td>"
+            Eventi_table_string += Date_And_Time
+            Eventi_table_string += "</td>"
+            Eventi_table_string += "<td>"
+            Eventi_table_string += Location
+            Eventi_table_string += "</td>"
+            Eventi_table_string += "<td>"
+            Eventi_table_string += Price
+            Eventi_table_string += "</td>"
+            Eventi_table_string += "<td>"
+            Eventi_table_string += Email
+            Eventi_table_string += "</td>"
+            Eventi_table_string += "<tr>"
+
+            print ("++++++++++HTML string ++++++++", ID, Event_Name, Host, Participants, Date_And_Time, Location, Price, Email )
+
+
+
+        content = CLUB_START + Eventi_table_string + CLUB_END
+
+
+
+
+
+
+    elif environ.get('PATH_INFO') == '/about':
+        status = '200 OK'
+        content = ABOUT
+
+
+    elif environ.get('PATH_INFO') == '/bar':
+        status = '200 OK'
+        content = BAR
+
+    elif environ.get('PATH_INFO') == '/art':
+        status = '200 OK'
+        content = ART
+
+    elif environ.get('PATH_INFO') == '/dinner':
+        status = '200 OK'
+        content = DINNER
+
+    elif environ.get('PATH_INFO') == '/houseparty':
+        status = '200 OK'
+        content = HOUSEPARTY
+
+    elif environ.get('PATH_INFO') == '/gamenight':
+        status = '200 OK'
+        content = GAMENIGHT
+
+    elif environ.get('PATH_INFO') == '/caraoke':
+        status = '200 OK'
+        content = CARAOKE
+
+    elif environ.get('PATH_INFO') == '/concert':
+        status = '200 OK'
+        content = CONCERT
+
+    else:
+        status = '404 NOT FOUND'
+        content = '<h1>Page could not be found. </h1>'
+    response_headers = [('Content-Type', 'text/html'), ('Content-Length', str(len(content)))]
+    start_response(status, response_headers)
+    yield content.encode('utf8')
+
+
+
+
+# +++++++++++ HELLO WORLD +++++++++++
+# A little pure-wsgi hello world we've cooked up, just
+# to prove everything works.  You should delete this
+# code to get your own working.
+
+# This file contains the WSGI configuration required to serve up your
+# web application at http://kokina.pythonanywhere.com/
+# It works by setting the variable 'application' to a WSGI handler of some
+# description.
+#
+
+# +++++++++++ GENERAL DEBUGGING TIPS +++++++++++
+# getting imports and sys.path right can be fiddly!
+# We've tried to collect some general tips here:
+# https://help.pythonanywhere.com/pages/DebuggingImportError
+
+
+# +++++++++++ HELLO WORLD +++++++++++
+# A little pure-wsgi hello world we've cooked up, just
+# to prove everything works.  You should delete this
+# code to get your own working.
+
+
