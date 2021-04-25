@@ -579,10 +579,11 @@ body {
 
 <!-- SEARCH BAR -->
 
-<form action="" method="GET">
-<input type="text" placeholder="Search..">
-<input type="submit" value="Search in CLUB">
-</form>
+<form method="get" action="/search">
+      <input type = "text" Eventi.Event_Type="searchstring" value="%">
+      <input type = "submit" value="Search an Event Type">
+    </form>
+    <hr>
 
 <br><br>
 
@@ -1843,7 +1844,7 @@ def application(environ, start_response):
 
         print ("############Club page#############")
 
-        sql_cmd = "SELECT Eventi.ID, Eventi.Event_Name,Eventi.Event_Type, Eventi.Host, Eventi.Participants, Eventi.Date_And_Time, Eventi.Location, Eventi.Email, Eventi.Price FROM Eventi"
+        sql_cmd = "SELECT * FROM Eventi WHERE Event_Type ='Club'"
         print ("+++++++++++ SQL command +++++ ", sql_cmd)
 
 
@@ -1912,8 +1913,7 @@ def application(environ, start_response):
 
         # modify the sql statement so that the user input is somehow in there
         # send a SQL command (selecting the wanted messages from the Message Table) to the SQL Server
-        sql_cmd = "SELECT Eventi.ID, Eventi.Event_Name, Eventi.Event_Type, Eventi.Host, Eventi.Participants, Eventi.Date_And_Time, Eventi.Location, Eventi.Email, Eventi.Price FROM Eventi WHERE Eventi.ID LIKE '" + userinput + "'"
-        
+        sql_cmd = "SELECT * FROM Eventi WHERE Event_Type = 'Club' LIKE '" + userinput + "'"
         print ("+++++++++++ SQL command +++++ ", sql_cmd)
 
         #sql_cmd = "SELECT Eventi.Event_Type From Eventi Values Club"
