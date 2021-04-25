@@ -597,6 +597,7 @@ body {
 <tr style="color:white">
 <th>ID</th>
 <th>Event Name</th>
+<th>Event Type</th>
 <th>Host</th>
 <th>Participants</th>
 <th>Date and Time</th>
@@ -1842,8 +1843,10 @@ def application(environ, start_response):
 
         print ("############Club page#############")
 
-        sql_cmd = "SELECT Eventi.ID, Eventi.Event_Name, Eventi.Host, Eventi.Participants, Eventi.Date_And_Time, Eventi.Location, Eventi.Email, Eventi.Price FROM Eventi"
+        sql_cmd = "SELECT Eventi.ID, Eventi.Event_Name,Eventi.Event_Type, Eventi.Host, Eventi.Participants, Eventi.Date_And_Time, Eventi.Location, Eventi.Email, Eventi.Price FROM Eventi"
         print ("+++++++++++ SQL command +++++ ", sql_cmd)
+        
+        sql_cmd = "SELECT Eventi.Event_Type From Eventi Value Club"
 
         Eventi_from_db = executeSQLCommand(sql_cmd)
 
@@ -1853,12 +1856,13 @@ def application(environ, start_response):
             # This follows the sequence in the SELECT statement above, starting with 0!
             ID = str (Eventis_record[0])
             Event_Name = str (Eventis_record[1]) # employee_record[0] includes the FirstName value # employee_record[1] includes the LastName value
-            Host = str (Eventis_record[2])
-            Participants = str (Eventis_record[3])
-            Date_And_Time = str (Eventis_record[4])
-            Location = str (Eventis_record[5])
-            Price = str (Eventis_record[6])
-            Email = str (Eventis_record[7])
+            Event_Type = str (Eventis_record[2])
+            Host = str (Eventis_record[3])
+            Participants = str (Eventis_record[4])
+            Date_And_Time = str (Eventis_record[5])
+            Location = str (Eventis_record[6])
+            Price = str (Eventis_record[7])
+            Email = str (Eventis_record[8])
 
             Eventi_table_string += "<tr>"
             Eventi_table_string += "<td>"
@@ -1866,6 +1870,9 @@ def application(environ, start_response):
             Eventi_table_string += "</td>"
             Eventi_table_string += "<td>"
             Eventi_table_string += Event_Name
+            Eventi_table_string += "</td>"
+             Eventi_table_string += "<td>"
+            Eventi_table_string += Event_Type
             Eventi_table_string += "</td>"
             Eventi_table_string += "<td>"
             Eventi_table_string += Host
@@ -1887,7 +1894,7 @@ def application(environ, start_response):
             Eventi_table_string += "</td>"
             Eventi_table_string += "<tr>"
 
-            print ("++++++++++HTML string ++++++++", ID, Event_Name, Host, Participants, Date_And_Time, Location, Price, Email )
+            print ("++++++++++HTML string ++++++++", ID, Event_Name, Event_Type, Host, Participants, Date_And_Time, Location, Price, Email )
 
 
 
