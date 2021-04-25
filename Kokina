@@ -1,4 +1,3 @@
-
 pageStart = """ <html>
 <head>
   <title>
@@ -221,8 +220,91 @@ function w3_close() {
 
 
 </html>
-
 """
+
+hostevent = """
+<!-- TITLE -->
+<style>
+h1 {
+  position: absolute;
+  left: 450px;
+  top: 50px;
+  font-size:70px;
+}
+</style>
+
+<h1 style="color:white"> <center>  Host an event </center></h1>
+
+<!-- PAGE CONTENT -->
+
+<div class="w3-teal">
+  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">☰</button>
+  <div class="w3-container">
+  </div>
+  </div>
+
+<script>
+function w3_open() {
+  document.getElementById("mySidebar").style.display = "block";
+}
+
+function w3_close() {
+  document.getElementById("mySidebar").style.display = "none";
+}
+</script>
+
+
+<br><br><br><br><br><br><br><br><br><br><br>
+<form method = "GET" action = '/Insert'>
+      <input type="text" name = "Event_Name" placeholder="Event Name" >
+      <input type="text" name = "Event_Type"  placeholder="Event Type" >
+      <input type="text" name = "Host"  placeholder="Host" >
+      <input type="text" name = "Participants "  placeholder="Participants" >
+      <input type="text" name = "Date_And_Time"  placeholder="Date and Time" >
+      <input type="text" name = "Location" placeholder="Location" >
+      <input type="text" name = "Email" placeholder="Email" >
+      <input type="text" name = "Price" placeholder="Price" >
+      <input type="submit" value = "Insert" ></input>
+      </form>
+
+
+
+   <br><br>
+ <hr>
+
+<!--Table of Host-->
+
+
+  <table width= 100% border=1>
+  <tr>
+    <th> <b> <span style="color:white"> ID </span> </b> </th>
+    <th> <b> <span style="color:white">Event Name</span> </b> </th>
+    <th> <b> <span style="color:white">Event Type</span> </b> </th>
+    <th> <b> <span style="color:white">Host</span> </b> </th>
+    <th> <b> <span style="color:white">Participants</span></b></th>
+    <th> <b> <span style="color:white">Date and Time</span></b></th>
+    <th> <b> <span style="color:white">Location</span></b></th>
+    <th> <b> <span style="color:white">Email</span></b></th>
+    <th> <b> <span style="color:white">Price</span></b></th>
+  </tr>
+
+  </table>
+
+
+  <form action="/" method="Get" target="_self">
+        <br>
+
+        <input type="submit" value="Home">
+
+      </form>
+  </div>
+ <hr>
+
+</html>
+"""
+
+
+
 
 
 def application(environ, start_response):
@@ -233,6 +315,12 @@ def application(environ, start_response):
     elif environ.get('PATH_INFO') == '/joinevent':
         status = '200 OK'
         content = pageStart + "LiveLoveParty - Join an event" + backgroundSidebar + joinevent
+
+    elif environ.get('PATH_INFO') == '/hostevent':
+        status = '200 OK'
+        content = pageStart + "" + backgroundSidebar + hostevent
+
+
 
     else:
         status = '404 NOT FOUND'
