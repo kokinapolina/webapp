@@ -1845,8 +1845,7 @@ def application(environ, start_response):
 
         sql_cmd = "SELECT Eventi.ID, Eventi.Event_Name,Eventi.Event_Type, Eventi.Host, Eventi.Participants, Eventi.Date_And_Time, Eventi.Location, Eventi.Email, Eventi.Price FROM Eventi"
         print ("+++++++++++ SQL command +++++ ", sql_cmd)
-        
-        sql_cmd = "SELECT Eventi.Event_Type From Eventi Value Club"
+
 
         Eventi_from_db = executeSQLCommand(sql_cmd)
 
@@ -1871,7 +1870,7 @@ def application(environ, start_response):
             Eventi_table_string += "<td>"
             Eventi_table_string += Event_Name
             Eventi_table_string += "</td>"
-             Eventi_table_string += "<td>"
+            Eventi_table_string += "<td>"
             Eventi_table_string += Event_Type
             Eventi_table_string += "</td>"
             Eventi_table_string += "<td>"
@@ -1913,10 +1912,17 @@ def application(environ, start_response):
 
         # modify the sql statement so that the user input is somehow in there
         # send a SQL command (selecting the wanted messages from the Message Table) to the SQL Server
-        sql_cmd = "SELECT Eventi.ID, Eventi.Event_Name, Eventi.Event_Type, Eventi.Host, Eventi.Participants, Eventi.Date_And_Time, Eventi.Location, Eventi.Email, Eventi.Price FROM Eventi WHERE Eventi.ID like '" + userinput + "'"
-        print ("+++++++++++ SQL command +++++ ", sql_cmd)
+        sql_cmd = "SELECT Eventi.ID, Eventi.Event_Name, Eventi.Event_Type, Eventi.Host, Eventi.Participants, Eventi.Date_And_Time, Eventi.Location, Eventi.Email, Eventi.Price FROM Eventi WHERE Eventi.ID LIKE '" + userinput + "'"
         
-        sql_cmd = "SELECT Eventi.Event_Type From Eventi Value Club"
+        print ("+++++++++++ SQL command +++++ ", sql_cmd)
+
+        #sql_cmd = "SELECT Eventi.Event_Type From Eventi Values Club"
+
+
+        # #### Just display all messages in the DB to the user (to indicate that the insert has indeed happened)
+
+        # send a SQL command (selecting all messages from the Message Table) to the SQL Server
+
 
         Eventi_from_db = executeSQLCommand(sql_cmd)
 
@@ -1926,20 +1932,16 @@ def application(environ, start_response):
         for Eventis_record in Eventi_from_db:
             # a record is a LIST of values (one value per column), so we need to access each value separately.
             # This follows the sequence in the SELECT statement above, starting with 0!
-            ID = str (Eventis_record[0])
-            Event_Name = str (Eventis_record[1]) # employee_record[0] includes the FirstName value# employee_record[1] includes the LastName value
-            Eventi.Event_Type = str (Eventis_record[2])
-            Host = str (Eventis_record[3])
-            Participants = str (Eventis_record[4])
-            Date_And_Time = str (Eventis_record[5])
-            Location = str (Eventis_record[6])
-            Price = str (Eventis_record[7])
-            Email = str (Eventis_record[8])
+            Event_Name = str (Eventis_record[0]) # employee_record[0] includes the FirstName value
+            Event_Type = str (Eventis_record[1]) # employee_record[1] includes the LastName value
+            Host = str (Eventis_record[2])
+            Participants = str (Eventis_record[3])
+            Date_And_Time = str (Eventis_record[4])
+            Location = str (Eventis_record[5])
+            Price = str (Eventis_record[6])
+            Email = str (Eventis_record[7])
 
             Eventi_table_string += "<tr>"
-            Eventi_table_string += "<td>"
-            Eventi_table_string += ID
-            Eventi_table_string += "</td>"
             Eventi_table_string += "<td>"
             Eventi_table_string += Event_Name
             Eventi_table_string += "</td>"
@@ -1966,11 +1968,12 @@ def application(environ, start_response):
             Eventi_table_string += "</td>"
             Eventi_table_string += "<tr>"
 
-            print ("++++++++++HTML string ++++++++", ID, Event_Name, Event_Name, Host, Participants, Date_And_Time, Location, Price, Email )
+            print ("++++++++++++++++++", Event_Name, Event_Type, Host, Participants, Date_And_Time, Location, Price, Email )
 
 
 
-        content = CLUB_START + Eventi_table_string + CLUB_END
+        content = CLUB_START+ Eventi_table_string  + CLUB_END
+
 
 
 
@@ -2030,14 +2033,3 @@ def application(environ, start_response):
 # It works by setting the variable 'application' to a WSGI handler of some
 # description.
 #
-
-# +++++++++++ GENERAL DEBUGGING TIPS +++++++++++
-# getting imports and sys.path right can be fiddly!
-# We've tried to collect some general tips here:
-# https://help.pythonanywhere.com/pages/DebuggingImportError
-
-
-# +++++++++++ HELLO WORLD +++++++++++
-# A little pure-wsgi hello world we've cooked up, just
-# to prove everything works.  You should delete this
-# code to get your own working.
