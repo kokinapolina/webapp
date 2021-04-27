@@ -281,11 +281,38 @@ function w3_close() {
 """
 
 about = """
+<!--Positions,size and color of text-->
+  left: 400px;
+  top: 50px;
+  font-size:90px;
+  color:white;
+}
+
+h2 {
+  position: absolute;
+  left: 560px;
+  top: 170px;
+  font-size:50px;
+  color:white;
+}
+
+article {
+  position: absolute;
+  left: 530px;
+  top: 320px;
+  font-size:27px;
+  color:white;
+}
+</style>
+
+<h1>LiveLoveParty</h1>
+
+
 <div class="w3-teal">
   <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">☰</button>
   <div class="w3-container">
   </div>
-  </div>
+ </div>
 
 
 <script>
@@ -312,36 +339,6 @@ function w3_close() {
       <br><br><br><br><br><br><br>
   <img src="https://media4.giphy.com/media/Rkzqt6BWKta5qrXppM/giphy.gif" width="490px" height="250 px">
 </nav>
-
-
-<!--Positions,size and color of text-->
-<style>
-h1 {
-  position: absolute;
-  left: 400px;
-  top: 50px;
-  font-size:90px;
-  color:white;
-}
-
-h2 {
-  position: absolute;
-  left: 560px;
-  top: 170px;
-  font-size:50px;
-  color:white;
-}
-
-article {
-  position: absolute;
-  left: 530px;
-  top: 320px;
-  font-size:27px;
-  color:white;
-}
-</style>
-
-<h1>LiveLoveParty</h1>
 
 <!--Headline for text-->
   <h2>-About us-</h2>
@@ -467,49 +464,49 @@ def application(environ, start_response):
 
     elif environ.get('PATH_INFO') == '/club':
         status = '200 OK'
-        content = pageStart + "LiveLoveParty - Join an event at a club" + backgroundSidebar + """ left: 450px; """ + titleEvent + "Join an event - CLUB" + eventPageContent
+        content = pageStart + "LiveLoveParty - Join an event at a club" + backgroundSidebar + titleEvent + "Join an event - CLUB" + eventPageContent
         content += """<input type="submit" value="Search in CLUB">"""
         content += eventTable
 
     elif environ.get('PATH_INFO') == '/bar':
         status = '200 OK'
-        content = pageStart + "LiveLoveParty - Join an event at a bar" + backgroundSidebar + """ left: 450px; """ + titleEvent + "Join an event - BAR" + eventPageContent
+        content = pageStart + "LiveLoveParty - Join an event at a bar" + backgroundSidebar + titleEvent + "Join an event - BAR" + eventPageContent
         content += """<input type="submit" value="Search in BAR">"""
         content += eventTable
 
     elif environ.get('PATH_INFO') == '/art':
         status = '200 OK'
-        content = pageStart + "LiveLoveParty - Join an event at an art gallery" + backgroundSidebar + """ left: 300px; """ + titleEvent + "Join an event - ART GALLERY" + eventPageContent
+        content = pageStart + "LiveLoveParty - Join an event at an art gallery" + backgroundSidebar + titleEvent + "Join an event - ART GALLERY" + eventPageContent
         content += """<input type="submit" value="Search in ART GALLERY">"""
         content += eventTable
 
     elif environ.get('PATH_INFO') == '/dinner':
 	    status = '200 OK'
-	    content = pageStart + "LiveLoveParty - Join a dinner" + backgroundSidebar + """ left: 410px; """ + titleEvent + "Join an event - DINNER" + eventPageContent
+	    content = pageStart + "LiveLoveParty - Join a dinner" + backgroundSidebar + titleEvent + "Join an event - DINNER" + eventPageContent
 	    content += """<input type="submit" value="Search in DINNER">"""
 	    content += eventTable
 
     elif environ.get('PATH_INFO') == '/houseparty':
 	    status = '200 OK'
-	    content = pageStart + "LiveLoveParty - Join a house party" + backgroundSidebar + """ left: 350px; """ + titleEvent + "Join an event - HOUSE PARTY" + eventPageContent
+	    content = pageStart + "LiveLoveParty - Join a house party" + backgroundSidebar + titleEvent + "Join an event - HOUSE PARTY" + eventPageContent
 	    content += """<input type="submit" value="Search in HOUSE PARTY">"""
 	    content += eventTable
 
     elif environ.get('PATH_INFO') == '/gamenight':
 	    status = '200 OK'
-	    content = pageStart + "LiveLoveParty - Join a game night" + backgroundSidebar + """ left: 360px; """ + titleEvent + "Join an event - GAME NIGHT" + eventPageContent
+	    content = pageStart + "LiveLoveParty - Join a game night" + backgroundSidebar + titleEvent + "Join an event - GAME NIGHT" + eventPageContent
 	    content += """<input type="submit" value="Search in GAME NIGHT">"""
 	    content += eventTable
 
     elif environ.get('PATH_INFO') == '/karaoke':
 	    status = '200 OK'
-	    content = pageStart + "LiveLoveParty - Join karaoke" + backgroundSidebar + """ left: 340px; """ + titleEvent + "Join an event - KARAOKE" + eventPageContent
+	    content = pageStart + "LiveLoveParty - Join karaoke" + backgroundSidebar + titleEvent + "Join an event - KARAOKE" + eventPageContent
 	    content += """<input type="submit" value="Search in KARAOKE">"""
 	    content += eventTable
 
     elif environ.get('PATH_INFO') == '/concert':
 	    status = '200 OK'
-	    content = pageStart + "LiveLoveParty - Join a concert" + backgroundSidebar + """ left: 360px; """ + titleEvent + "Join an event - CONCERT" + eventPageContent
+	    content = pageStart + "LiveLoveParty - Join a concert" + backgroundSidebar + titleEvent + "Join an event - CONCERT" + eventPageContent
 	    content += """<input type="submit" value="Search in CONCERT">"""
 	    content += eventTable
 
