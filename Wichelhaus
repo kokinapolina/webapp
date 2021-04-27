@@ -1767,15 +1767,6 @@ def application(environ, start_response):
         # construct the SQL command (this time it's an INSERT statement)
         sql_cmd = "INSERT INTO Eventi (Event_Name, Event_Type, Host, Participants, Date_And_Time, Location, Email, Price ) VALUES ('" +userinput_Event_Name+"', '"+userinput_Event_Type+"', '"+userinput_Host+"', '"+str(userinput_Participants)+"','"+str(userinput_Date_And_Time)+"', '"+userinput_Location+"',  '"+userinput_Email+"', '"+str(userinput_Price)+"')"
 
-        #sql_cmd = "INSERT INTO Event_ (Event_Name, Event_Type, Host, Participants, Date_And_Time, Location, Price, Email) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-        #val = [
-        #("Time to Rock", "Concert", "Rockpalace Tübingen", "120", "02.06.2021 19:30", "Tübingen", "rockpalace@gmail.com", "15"),
-        #("Quiet Lane", "Concert", "Johannes Reising", "200", "20.05.2021 20:00", "Stuttgart", "Reising.94@web.de", "12,60"),
-        #("House Party", "Party", "James Reed", "20", "15.05.2021 18:00", "Reutlingen", "James.reed@gmail.com", "10"),
-        #("After Work Party", "Party", "Lara Tann", "30", "10.06.2021 21:00", "Reutlingen", "Lara-Tann@yahoo.com", "10"),
-        #("Club-party", "Party", "Club Stuttgart", "60", "01.06.2021 21:00", "Stuttgart", "Stuttgart.Club@gmx.com", "12"),
-
-
 
         print ("+++++++++++ SQL command +++++ ", sql_cmd)
 
@@ -1837,6 +1828,84 @@ def application(environ, start_response):
 
 
         content = HOST_EVENT_START + Eventi_table_string + HOST_EVENT_END
+    ##############################################################
+################## Delete Page ###############################
+##############################################################
+
+    elif environ.get('PATH_INFO') == '/delete':
+        status = '200 OK'
+
+        # get the user input from the query string (the employeeid)
+        HttpQuery = parse_qs(environ['QUERY_STRING'])
+
+        userinput_Event_Name = HttpQuery.get('Event_Name', ['%'])[0]
+
+        userinput_Event_Type = HttpQuery.get('Event_Type', ['%'])[0]
+
+        userinput_Host = HttpQuery.get('Host', ['%'])[0]
+
+        userinput_Participants = HttpQuery.get('Participants', ['%'])[0]
+
+        userinput_Date_And_Time = HttpQuery.get('Date_And_Time', ['%'])[0]
+
+        userinput_Location = HttpQuery.get('Location', ['%'])[0]
+
+        userinput_Email = HttpQuery.get('Email', ['%'])[0]
+
+        userinput_Price = HttpQuery.get('Price', ['%'])[0]
+
+          
+        Eventi_table_string = ""
+        for Eventis_record in Eventi_from_db:
+            # a record is a LIST of values (one value per column), so we need to access each value separately.
+            # This follows the sequence in the SELECT statement above, starting with 0!
+            Event_Name = str (Eventis_record[0]) # employee_record[0] includes the FirstName value
+            Event_Type = str (Eventis_record[1]) # employee_record[1] includes the LastName value
+            Host = str (Eventis_record[2])
+            Participants = str (Eventis_record[3])
+            Date_And_Time = str (Eventis_record[4])
+            Location = str (Eventis_record[5])
+            Price = str (Eventis_record[6])
+            Email = str (Eventis_record[7])
+
+            Eventi_table_string += "<tr>"
+            Eventi_table_string += "<td>"
+            Eventi_table_string += Event_Name
+            Eventi_table_string += "</td>"
+            Eventi_table_string += "<td>"
+            Eventi_table_string += Event_Type
+            Eventi_table_string += "</td>"
+            Eventi_table_string += "<td>"
+            Eventi_table_string += Host
+            Eventi_table_string += "</td>"
+            Eventi_table_string += "<td>"
+            Eventi_table_string += Participants
+            Eventi_table_string += "</td>"
+            Eventi_table_string += "<td>"
+            Eventi_table_string += Date_And_Time
+            Eventi_table_string += "</td>"
+            Eventi_table_string += "<td>"
+            Eventi_table_string += Location
+            Eventi_table_string += "</td>"
+            Eventi_table_string += "<td>"
+            Eventi_table_string += Price
+            Eventi_table_string += "</td>"
+            Eventi_table_string += "<td>"
+            Eventi_table_string += Email
+            Eventi_table_string += "</td>"
+            Eventi_table_string += "<tr>"
+
+            print ("++++++++++++++++++", Event_Name, Event_Type, Host, Participants, Date_And_Time, Location, Price, Email )
+
+
+
+
+        sql_cmd = "DELETE FROM Eventi WHERE Eventi.Event_Name LIKE '"+userinput_delete_Event_Name"'"
+
+
+        #database_delete = database_delete1 + experience_table_string + database_delete2
+        #content = database_delete
+
 
     elif environ.get('PATH_INFO') == '/club':
         status = '200 OK'
