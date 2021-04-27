@@ -1828,7 +1828,8 @@ def application(environ, start_response):
 
 
         content = HOST_EVENT_START + Eventi_table_string + HOST_EVENT_END
-    ##############################################################
+
+##############################################################
 ################## Delete Page ###############################
 ##############################################################
 
@@ -1854,7 +1855,8 @@ def application(environ, start_response):
 
         userinput_Price = HttpQuery.get('Price', ['%'])[0]
 
-          
+        sql_cmd = "SELECT Eventi.Event_Name, Eventi.Event_Type, Eventi.Host, Eventi.Participants, Eventi.Date_And_Time, Eventi.Location, Eventi.Email, Eventi.Price FROM Eventi AND Eventi.Event_Name LIKE '"+userinput+"'"
+ 
         Eventi_table_string = ""
         for Eventis_record in Eventi_from_db:
             # a record is a LIST of values (one value per column), so we need to access each value separately.
