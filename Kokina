@@ -7,6 +7,7 @@ backgroundSidebar = """ </title>
 </head>
 
 <body>
+
 <!--Background Picture-->
 <style>
 body {
@@ -21,20 +22,20 @@ body {
 <div class="w3-sidebar w3-bar-block w3-border-right" style="display:none" id="mySidebar">
   <button onclick="w3_close()" class="w3-bar-item w3-large">Close &times;</button>
 
-
   <a href="/" class="w3-bar-item w3-button"> Home </a>
   <a href="/about" class="w3-bar-item w3-button"> About us </a>
 </div>
 
 <div class="w3-main" style="margin-left:0px">
-"""
-
-homepage = """
+</div>
 
 <!--Title of the page-->
 <style>
 h1 {
   position: absolute;
+"""
+
+homepage = """
   left: 340px;
   top: 225px;
   text-align:center;
@@ -42,7 +43,6 @@ h1 {
 </style>
 
 <h1 style="font-size:105px;"> <center>LiveLoveParty</center> </h1>
-
 
 <!-- Page Content -->
 <div class="w3-teal">
@@ -99,17 +99,11 @@ h3 {
 </div>
 </div>
 
-
 </body>
 </html>
 """
 
 joinevent = """
-
-<!-- TITLE -->
-<style>
-h1 {
-  position: absolute;
   left: 490px;
   top: 50px;
   font-size:70px;
@@ -144,7 +138,6 @@ function w3_close() {
 
 <tr>
 
-
 <th>
   <a href="/club">
     <img src="https://www.rbb24.de/content/dam/rbb/rbb/rbb24/2020/2020_10/dpa-account/119763669.jpg.jpg/size=708x398.jpg" alt="CLUB" width="300" height="200">
@@ -152,14 +145,12 @@ function w3_close() {
  <div style="color:white">CLUB</div>
 </th>
 
-
 <th>
   <a href="/bar">
     <img src="https://static.duesseldorf-tonight.de/thumbs/img/News/8/03/05/10/p/p_pano/team-der-boston-bar-zeigt-kampfgeist-aufgeben-kommt-nicht-in-frage-1005038.jpg" alt="BAR" width="300" height="200">
   </a>
   <div style="color:white">BAR</div>
 </th>
-
 
 <th>
   <a href="/art">
@@ -178,11 +169,9 @@ function w3_close() {
 
 </tr>
 
-
 <!-- NEW TABLE ROW -->
 
 <tr>
-
 
 <th>
   <a href="/houseparty">
@@ -191,7 +180,6 @@ function w3_close() {
   <div style="color:white">HOUSE PARTY</div>
 </th>
 
-
 <th>
   <a href="/gamenight">
     <img src="https://t3.ftcdn.net/jpg/02/75/50/00/360_F_275500010_PI6TG940EeoAgVsT1w7Sd8MvNhtekRB0.jpg" alt="SHISHA LOUNGE" width="300" height="200">
@@ -199,14 +187,12 @@ function w3_close() {
   <div style="color:white">GAME NIGHT</div>
 </th>
 
-
 <th>
   <a href="/karaoke">
     <img src="https://www.delamar.de/wp-content/uploads/2020/03/karaoke.jpg" alt="KARAOKE" width="300" height="200">
   </a>
   <div style="color:white">KARAOKE</div>
 </th>
-
 
 <th>
   <a href="/concert">
@@ -218,15 +204,10 @@ function w3_close() {
 </tr>
 </table>
 
-
 </html>
 """
 
 hostevent = """
-<!-- TITLE -->
-<style>
-h1 {
-  position: absolute;
   left: 450px;
   top: 50px;
   font-size:70px;
@@ -267,13 +248,10 @@ function w3_close() {
       <input type="submit" value = "Insert" ></input>
       </form>
 
-
-
    <br><br>
  <hr>
 
 <!--Table of Host-->
-
 
   <table width= 100% border=1>
   <tr>
@@ -290,7 +268,6 @@ function w3_close() {
 
   </table>
 
-
   <form action="/" method="Get" target="_self">
         <br>
 
@@ -303,7 +280,171 @@ function w3_close() {
 </html>
 """
 
+about = """
+<div class="w3-teal">
+  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">☰</button>
+  <div class="w3-container">
+  </div>
+  </div>
 
+
+<script>
+function w3_open() {
+  document.getElementById("mySidebar").style.display = "block";
+}
+
+function w3_close() {
+  document.getElementById("mySidebar").style.display = "none";
+}
+</script>
+
+
+ <!-- GIF-->
+<nav>
+  <br>
+  <br>
+  <br>
+    <br>
+     <br>
+      <br>
+      <br>
+      <br>
+      <br><br><br><br><br><br><br>
+  <img src="https://media4.giphy.com/media/Rkzqt6BWKta5qrXppM/giphy.gif" width="490px" height="250 px">
+</nav>
+
+
+<!--Positions,size and color of text-->
+<style>
+h1 {
+  position: absolute;
+  left: 400px;
+  top: 50px;
+  font-size:90px;
+  color:white;
+}
+
+h2 {
+  position: absolute;
+  left: 560px;
+  top: 170px;
+  font-size:50px;
+  color:white;
+}
+
+article {
+  position: absolute;
+  left: 530px;
+  top: 320px;
+  font-size:27px;
+  color:white;
+}
+</style>
+
+<h1>LiveLoveParty</h1>
+
+<!--Headline for text-->
+  <h2>-About us-</h2>
+
+<article>
+<!--Description-->
+<p>
+Our goal is to connect you with the best people and give you a wonderful evening at the event of your choice. Also we're dedicated to offer a space online for presenting your event and inviting new people.<br>
+<br> We hope you enjoy and have great time with love your LiveLoveParty team:<br>
+<br>Rani, Fabian, Polina, Beatrice, Julia and Johanna
+</p>
+</article>
+
+</body>
+</html>
+"""
+
+titleEvent = """
+    top: 50px;
+    font-size:70px;
+}
+</style>
+
+<h1 style="color:white"> <center>
+"""
+
+eventPageContent = """
+</center></h1>
+
+<!-- PAGE CONTENT -->
+<div class="w3-teal">
+  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">☰</button>
+  <div class="w3-container">
+  </div>
+  </div>
+
+<script>
+function w3_open() {
+  document.getElementById("mySidebar").style.display = "block";
+}
+
+function w3_close() {
+  document.getElementById("mySidebar").style.display = "none";
+}
+</script>
+
+<br><br><br><br><br><br><br><br><br><br><br>
+
+<!-- SEARCH BAR -->
+<form action="" method="GET">
+<input type="text" placeholder="Search..">
+"""
+
+eventTable = """
+</form>
+
+<br><br>
+
+<!--EVENT TABLE -->
+<hr>
+<table width=100% border=1>
+<tr style="color:white">
+<th>ID</th>
+<th>Event Name</th>
+<th>Host</th>
+<th>Participants</th>
+<th>Date and Time</th>
+<th>Location</th>
+<th>Email</th>
+<th>Price</th>
+</tr>
+</table>
+
+
+<table border=1>
+<tr style="color:white">
+<th></th>
+</tr>
+</table>
+<hr>
+
+<br><br>
+
+<!--- INSERT BARS FOR ATTENDEE-->
+
+<div class="container">
+<form>
+
+  <div class="wrapper">
+    <p style="color:white">Please remember! You need to be at least 18 to join:)</p>
+    <p style="color:white">Please insert to join the event and contact the host via email:</p>
+    <div class="search-container">
+      <input type="text" class="search" placeholder="First Name">
+      <input type="text" class="date-from" placeholder="Last Name">
+      <input type="text" class="date-to" placeholder="Email">
+      <button type="submit" class="button">Insert</button>
+    </div>
+  </div>
+</form>
+</div>
+
+</html>
+"""
 
 
 
@@ -318,7 +459,59 @@ def application(environ, start_response):
 
     elif environ.get('PATH_INFO') == '/hostevent':
         status = '200 OK'
-        content = pageStart + "" + backgroundSidebar + hostevent
+        content = pageStart + "LiveLoveParty - Host an event" + backgroundSidebar + hostevent
+
+    elif environ.get('PATH_INFO') == '/about':
+	    status = '200 OK'
+	    content = pageStart + "LiveLoveParty - About us" + backgroundSidebar + about
+
+    elif environ.get('PATH_INFO') == '/club':
+        status = '200 OK'
+        content = pageStart + "LiveLoveParty - Join an event at a club" + backgroundSidebar + """ left: 450px; """ + titleEvent + "Join an event - CLUB" + eventPageContent
+        content += """<input type="submit" value="Search in CLUB">"""
+        content += eventTable
+
+    elif environ.get('PATH_INFO') == '/bar':
+        status = '200 OK'
+        content = pageStart + "LiveLoveParty - Join an event at a bar" + backgroundSidebar + """ left: 450px; """ + titleEvent + "Join an event - BAR" + eventPageContent
+        content += """<input type="submit" value="Search in BAR">"""
+        content += eventTable
+
+    elif environ.get('PATH_INFO') == '/art':
+        status = '200 OK'
+        content = pageStart + "LiveLoveParty - Join an event at an art gallery" + backgroundSidebar + """ left: 300px; """ + titleEvent + "Join an event - ART GALLERY" + eventPageContent
+        content += """<input type="submit" value="Search in ART GALLERY">"""
+        content += eventTable
+
+    elif environ.get('PATH_INFO') == '/dinner':
+	    status = '200 OK'
+	    content = pageStart + "LiveLoveParty - Join a dinner" + backgroundSidebar + """ left: 410px; """ + titleEvent + "Join an event - DINNER" + eventPageContent
+	    content += """<input type="submit" value="Search in DINNER">"""
+	    content += eventTable
+
+    elif environ.get('PATH_INFO') == '/houseparty':
+	    status = '200 OK'
+	    content = pageStart + "LiveLoveParty - Join a house party" + backgroundSidebar + """ left: 350px; """ + titleEvent + "Join an event - HOUSE PARTY" + eventPageContent
+	    content += """<input type="submit" value="Search in HOUSE PARTY">"""
+	    content += eventTable
+
+    elif environ.get('PATH_INFO') == '/gamenight':
+	    status = '200 OK'
+	    content = pageStart + "LiveLoveParty - Join a game night" + backgroundSidebar + """ left: 360px; """ + titleEvent + "Join an event - GAME NIGHT" + eventPageContent
+	    content += """<input type="submit" value="Search in GAME NIGHT">"""
+	    content += eventTable
+
+    elif environ.get('PATH_INFO') == '/karaoke':
+	    status = '200 OK'
+	    content = pageStart + "LiveLoveParty - Join karaoke" + backgroundSidebar + """ left: 340px; """ + titleEvent + "Join an event - KARAOKE" + eventPageContent
+	    content += """<input type="submit" value="Search in KARAOKE">"""
+	    content += eventTable
+
+    elif environ.get('PATH_INFO') == '/concert':
+	    status = '200 OK'
+	    content = pageStart + "LiveLoveParty - Join a concert" + backgroundSidebar + """ left: 360px; """ + titleEvent + "Join an event - CONCERT" + eventPageContent
+	    content += """<input type="submit" value="Search in CONCERT">"""
+	    content += eventTable
 
 
 
