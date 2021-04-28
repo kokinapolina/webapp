@@ -1,3 +1,6 @@
+import MySQLdb
+from urllib.parse import parse_qs
+
 pageStart = """ <html>
 <head>
   <title>
@@ -207,7 +210,7 @@ function w3_close() {
 </html>
 """
 
-hostevent = """
+hosteventStart = """
   left: 450px;
   top: 50px;
   font-size:70px;
@@ -265,7 +268,9 @@ function w3_close() {
     <th> <b> <span style="color:white">Email</span></b></th>
     <th> <b> <span style="color:white">Price</span></b></th>
   </tr>
+"""
 
+hosteventEnd = """
   </table>
 
   <form action="/" method="Get" target="_self">
@@ -392,7 +397,7 @@ function w3_close() {
 <input type="text" placeholder="Search..">
 """
 
-eventTable = """
+eventTableStart = """
 </form>
 
 <br><br>
@@ -410,6 +415,9 @@ eventTable = """
 <th>Email</th>
 <th>Price</th>
 </tr>
+"""
+
+eventTableEnd = """
 </table>
 
 
@@ -444,6 +452,90 @@ eventTable = """
 """
 
 
+def executeSQLCommand (sql_command):
+
+    ##### Connect to the MySQL DB #####
+
+    password = "Uniisttoll123" # this is your MySQL database password, NOT the password you use when you log into PythonAnywhere! I told you to write it down somewhere... >:->
+    results = ()
+
+    # you'll find the info you need to enter in your Databases Tab on PythonAnywhere
+    db = MySQLdb.connect("Wichelhaus.mysql.pythonanywhere-services.com","Wichelhaus",password, "Wichelhaus$EmployeeDB")
+
+    cursor = db.cursor()
+
+    try:
+        cursor.execute(sql_command)  # Execute the SQL command
+        results = cursor.fetchall()  # Fetch all the rows in a list of lists.
+        db.commit() # only necessary if the command changes the DB, but hey...
+    except:
+        db.rollback() # if stuff went wrong, no change to the DB should be made
+        print ("+++++++++ Error: unable to fetch data from database")
+    db.close()
+
+    return results
+
+
+def eventiTable(Eventi_from_db):
+    Eventi_table_string = ""
+    for Eventis_record in Eventi_from_db:
+        # a record is a LIST of values (one value per column), so we need to access each value separately.
+        # This follows the sequence in the SELECT statement above, starting with 0!
+        Event_Name = str (Eventis_record[0])
+        Event_Type = str (Eventis_record[1])
+        Host = str (Eventis_record[2])
+        Participants = str (Eventis_record[3])
+        Date_And_Time = str (Eventis_record[4])
+        Location = str (Eventis_record[5])
+        Price = str (Eventis_record[6])
+        Email = str (Eventis_record[7])
+
+        Eventi_table_string += "<tr>"
+        Eventi_table_string += "<td>" + Event_Name + "</td>"
+        Eventi_table_string += "<td>" + Event_Type + "</td>"
+        Eventi_table_string += "<td>" + Host + "</td>"
+        Eventi_table_string += "<td>" + Participants + "</td>"
+        Eventi_table_string += "<td>" + Date_And_Time + "</td>"
+        Eventi_table_string += "<td>" + Location + "</td>"
+        Eventi_table_string += "<td>" + Price + "</td>"
+        Eventi_table_string += "<td>" + Email + "</td>"
+        Eventi_table_string += "<tr>"
+
+        print ("++++++++++++++++++", Event_Name, Event_Type, Host, Participants, Date_And_Time, Location, Price, Email)
+
+    return Eventi_table_string
+
+
+def userInput(request):
+    # get the user input from the HTTP query string for = Event_Name
+    HttpQuery = parse_qs(environ['QUERY_STRING'])
+
+    userinput_Event_Name = HttpQuery.get('Event_Name', ['%'])[0]
+
+    userinput_Event_Type = HttpQuery.get('Event_Type', ['%'])[0]
+
+    userinput_Host = HttpQuery.get('Host', ['%'])[0]
+
+    userinput_Participants = HttpQuery.get('Participants', ['%'])[0]
+
+    userinput_Date_And_Time = HttpQuery.get('Date_And_Time', ['%'])[0]
+
+    userinput_Location = HttpQuery.get('Location', ['%'])[0]
+
+    userinput_Email = HttpQuery.get('Email', ['%'])[0]
+
+    userinput_Price = HttpQuery.get('Price', ['%'])[0]
+
+    if request == 'insert':
+        sql_cmd = "INSERT INTO Eventi (Event_Name, Event_Type, Host, Participants, Date_And_Time, Location, Email, Price ) VALUES ('" +userinput_Event_Name+"', '"+userinput_Event_Type+"', '"+userinput_Host+"', '"+str(userinput_Participants)+"','"+str(userinput_Date_And_Time)+"', '"+userinput_Location+"',  '"+userinput_Email+"', '"+str(userinput_Price)+"')"
+
+    elif request == 'delete':
+        sql_cmd = "SELECT Eventi.Event_Name, Eventi.Event_Type, Eventi.Host, Eventi.Participants, Eventi.Date_And_Time, Eventi.Location, Eventi.Email, Eventi.Price FROM Eventi AND Eventi.Event_Name LIKE '"+userinput+"'"
+
+    return sql_cmd
+
+
+##### Main funfction #####
 
 def application(environ, start_response):
     if environ.get('PATH_INFO') == '/':
@@ -454,62 +546,168 @@ def application(environ, start_response):
         status = '200 OK'
         content = pageStart + "LiveLoveParty - Join an event" + backgroundSidebar + joinevent
 
+        #construct an HTML that has the results from the SELECT statment mixed in
+
     elif environ.get('PATH_INFO') == '/hostevent':
         status = '200 OK'
-        content = pageStart + "LiveLoveParty - Host an event" + backgroundSidebar + hostevent
+        # connet to SQL data base
+        sql_cmd = "SELECT Eventi.Event_Name, Eventi.Event_Type, Eventi.Host, Eventi.Participants, Eventi.Date_And_Time, Eventi.Location, Eventi.Email, Eventi.Price FROM Eventi"
+        print ("++++++++++++++++++", sql_cmd)
+
+        content = pageStart + "LiveLoveParty - Host an event" + backgroundSidebar + hosteventStart + eventiTable(executeSQLCommand(sql_cmd)) + hosteventEnd
 
     elif environ.get('PATH_INFO') == '/about':
 	    status = '200 OK'
 	    content = pageStart + "LiveLoveParty - About us" + backgroundSidebar + about
 
+    elif environ.get('PATH_INFO') == '/Insert':
+        status = '200 OK'
+        print ("###################  INSERT PAGE ########################")
+
+        HttpQuery = parse_qs(environ['QUERY_STRING'])
+
+        userinput_Event_Name = HttpQuery.get('Event_Name', ['%'])[0]
+
+        userinput_Event_Type = HttpQuery.get('Event_Type', ['%'])[0]
+
+        userinput_Host = HttpQuery.get('Host', ['%'])[0]
+
+        userinput_Participants = HttpQuery.get('Participants', ['%'])[0]
+
+        userinput_Date_And_Time = HttpQuery.get('Date_And_Time', ['%'])[0]
+
+        userinput_Location = HttpQuery.get('Location', ['%'])[0]
+
+        userinput_Email = HttpQuery.get('Email', ['%'])[0]
+
+        userinput_Price = HttpQuery.get('Price', ['%'])[0]
+
+        # construct the SQL command (this time it's an INSERT statement)
+
+        sql_cmd = "INSERT INTO Eventi (Event_Name, Event_Type, Host, Participants, Date_And_Time, Location, Email, Price ) VALUES ('" +userinput_Event_Name+"', '"+userinput_Event_Type+"', '"+userinput_Host+"', '"+str(userinput_Participants)+"','"+str(userinput_Date_And_Time)+"', '"+userinput_Location+"',  '"+userinput_Email+"', '"+str(userinput_Price)+"')"
+        print ("+++++++++++ SQL command +++++ ", sql_cmd)
+        executeSQLCommand(sql_cmd)
+
+        sql_cmd = "SELECT Eventi.Event_Name, Eventi.Event_Type, Eventi.Host, Eventi.Participants, Eventi.Date_And_Time, Eventi.Location, Eventi.Email, Eventi.Price FROM Eventi"
+
+        content = pageStart + "LiveLoveParty - Host an event" + backgroundSidebar + hosteventStart + eventiTable(executeSQLCommand(sql_cmd)) + hosteventEnd
+
+    elif environ.get('PATH_INFO') == '/Delete':
+        status = '200 OK'
+        print ("###################  DELETE PAGE ########################")
+
+        # construct the SQL command (this time it's a DELETE statement)
+
+        print ("+++++++++++ SQL command +++++ ", userInput('delete'))
+        executeSQLCommand(sql_cmd)
+
+        # sql_cmd = "DELETE FROM Eventi WHERE Eventi.Event_Name LIKE '"+userinput_delete_Event_Name"'"
+
+        #database_delete = database_delete1 + experience_table_string + database_delete2
+        #content = database_delete
+
     elif environ.get('PATH_INFO') == '/club':
         status = '200 OK'
+
+        print ("############Club page#############")
+
+        sql_cmd = "SELECT * FROM Eventi WHERE Event_Type ='Club'"
+        print ("+++++++++++ SQL command +++++ ", sql_cmd)
+
         content = pageStart + "LiveLoveParty - Join an event at a club" + backgroundSidebar + titleEvent + "Join an event - CLUB" + eventPageContent
         content += """<input type="submit" value="Search in CLUB">"""
-        content += eventTable
+        content += eventTableStart + eventiTable(executeSQLCommand(sql_cmd)) + eventTableEnd
 
     elif environ.get('PATH_INFO') == '/bar':
         status = '200 OK'
+
+        print ("############Bar page#############")
+
+        sql_cmd = "SELECT * FROM Eventi WHERE Event_Type ='Bar'"
+        print ("+++++++++++ SQL command +++++ ", sql_cmd)
+
+        status = '200 OK'
         content = pageStart + "LiveLoveParty - Join an event at a bar" + backgroundSidebar + titleEvent + "Join an event - BAR" + eventPageContent
         content += """<input type="submit" value="Search in BAR">"""
-        content += eventTable
+        content += eventTableStart + eventiTable(executeSQLCommand(sql_cmd)) + eventTableEnd
 
     elif environ.get('PATH_INFO') == '/art':
         status = '200 OK'
+
+        print ("############Art page#############")
+
+        sql_cmd = "SELECT * FROM Eventi WHERE Event_Type ='Art'"
+        print ("+++++++++++ SQL command +++++ ", sql_cmd)
+
+        status = '200 OK'
         content = pageStart + "LiveLoveParty - Join an event at an art gallery" + backgroundSidebar + titleEvent + "Join an event - ART GALLERY" + eventPageContent
         content += """<input type="submit" value="Search in ART GALLERY">"""
-        content += eventTable
+        content += eventTableStart + eventiTable(executeSQLCommand(sql_cmd)) + eventTableEnd
 
     elif environ.get('PATH_INFO') == '/dinner':
-	    status = '200 OK'
-	    content = pageStart + "LiveLoveParty - Join a dinner" + backgroundSidebar + titleEvent + "Join an event - DINNER" + eventPageContent
-	    content += """<input type="submit" value="Search in DINNER">"""
-	    content += eventTable
+        status = '200 OK'
+
+        print ("############Dinner page#############")
+
+        sql_cmd = "SELECT * FROM Eventi WHERE Event_Type ='Dinner'"
+        print ("+++++++++++ SQL command +++++ ", sql_cmd)
+
+        status = '200 OK'
+        content = pageStart + "LiveLoveParty - Join a dinner" + backgroundSidebar + titleEvent + "Join an event - DINNER" + eventPageContent
+        content += """<input type="submit" value="Search in DINNER">"""
+        content += eventTableStart + eventiTable(executeSQLCommand(sql_cmd)) + eventTableEnd
 
     elif environ.get('PATH_INFO') == '/houseparty':
-	    status = '200 OK'
-	    content = pageStart + "LiveLoveParty - Join a house party" + backgroundSidebar + titleEvent + "Join an event - HOUSE PARTY" + eventPageContent
-	    content += """<input type="submit" value="Search in HOUSE PARTY">"""
-	    content += eventTable
+        status = '200 OK'
+
+        print ("############Houseparty page#############")
+
+        sql_cmd = "SELECT * FROM Eventi WHERE Event_Type ='House Party'"
+        print ("+++++++++++ SQL command +++++ ", sql_cmd)
+
+        status = '200 OK'
+        content = pageStart + "LiveLoveParty - Join a house party" + backgroundSidebar + titleEvent + "Join an event - HOUSE PARTY" + eventPageContent
+        content += """<input type="submit" value="Search in HOUSE PARTY">"""
+        content += eventTableStart + eventiTable(executeSQLCommand(sql_cmd)) + eventTableEnd
 
     elif environ.get('PATH_INFO') == '/gamenight':
-	    status = '200 OK'
-	    content = pageStart + "LiveLoveParty - Join a game night" + backgroundSidebar + titleEvent + "Join an event - GAME NIGHT" + eventPageContent
-	    content += """<input type="submit" value="Search in GAME NIGHT">"""
-	    content += eventTable
+        status = '200 OK'
+
+        print ("############Game night page#############")
+
+        sql_cmd = "SELECT * FROM Eventi WHERE Event_Type ='Game Night'"
+        print ("+++++++++++ SQL command +++++ ", sql_cmd)
+
+        status = '200 OK'
+        content = pageStart + "LiveLoveParty - Join a game night" + backgroundSidebar + titleEvent + "Join an event - GAME NIGHT" + eventPageContent
+        content += """<input type="submit" value="Search in GAME NIGHT">"""
+        content += eventTableStart + eventiTable(executeSQLCommand(sql_cmd)) + eventTableEnd
 
     elif environ.get('PATH_INFO') == '/karaoke':
-	    status = '200 OK'
-	    content = pageStart + "LiveLoveParty - Join karaoke" + backgroundSidebar + titleEvent + "Join an event - KARAOKE" + eventPageContent
-	    content += """<input type="submit" value="Search in KARAOKE">"""
-	    content += eventTable
+        status = '200 OK'
+
+        print ("############Karaoke page#############")
+
+        sql_cmd = "SELECT * FROM Eventi WHERE Event_Type ='Karaoke'"
+        print ("+++++++++++ SQL command +++++ ", sql_cmd)
+
+        status = '200 OK'
+        content = pageStart + "LiveLoveParty - Join karaoke" + backgroundSidebar + titleEvent + "Join an event - KARAOKE" + eventPageContent
+        content += """<input type="submit" value="Search in KARAOKE">"""
+        content += eventTableStart + eventiTable(executeSQLCommand(sql_cmd)) + eventTableEnd
 
     elif environ.get('PATH_INFO') == '/concert':
-	    status = '200 OK'
-	    content = pageStart + "LiveLoveParty - Join a concert" + backgroundSidebar + titleEvent + "Join an event - CONCERT" + eventPageContent
-	    content += """<input type="submit" value="Search in CONCERT">"""
-	    content += eventTable
+        status = '200 OK'
 
+        print ("############Concert page#############")
+
+        sql_cmd = "SELECT * FROM Eventi WHERE Event_Type ='Concert'"
+        print ("+++++++++++ SQL command +++++ ", sql_cmd)
+
+        status = '200 OK'
+        content = pageStart + "LiveLoveParty - Join a concert" + backgroundSidebar + titleEvent + "Join an event - CONCERT" + eventPageContent
+        content += """<input type="submit" value="Search in CONCERT">"""
+        content += eventTableStart + eventiTable(executeSQLCommand(sql_cmd)) + eventTableEnd
 
 
     else:
