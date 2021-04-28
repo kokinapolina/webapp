@@ -45,7 +45,7 @@ homepage = """
 }
 </style>
 
-<h1 style="font-size:105px;"> <center>LiveLoveParty</center> </h1>
+<h1 style="font-size:105px; color:white;"> <center>LiveLoveParty</center> </h1>
 
 <!-- Page Content -->
 <div class="w3-teal">
@@ -506,6 +506,33 @@ def eventiTable(Eventi_from_db):
     return Eventi_table_string
 
 
+def userInput(HttpQuery, request):
+
+    userinput_Event_Name = HttpQuery.get('Event_Name', ['%'])[0]
+
+    userinput_Event_Type = HttpQuery.get('Event_Type', ['%'])[0]
+
+    userinput_Host = HttpQuery.get('Host', ['%'])[0]
+
+    userinput_Participants = HttpQuery.get('Participants', ['%'])[0]
+
+    userinput_Date_And_Time = HttpQuery.get('Date_And_Time', ['%'])[0]
+
+    userinput_Location = HttpQuery.get('Location', ['%'])[0]
+
+    userinput_Email = HttpQuery.get('Email', ['%'])[0]
+
+    userinput_Price = HttpQuery.get('Price', ['%'])[0]
+
+    if request == 'insert':
+        sql_cmd = "INSERT INTO Eventi (Event_Name, Event_Type, Host, Participants, Date_And_Time, Location, Email, Price ) VALUES ('" +userinput_Event_Name+"', '"+userinput_Event_Type+"', '"+userinput_Host+"', '"+str(userinput_Participants)+"','"+str(userinput_Date_And_Time)+"', '"+userinput_Location+"',  '"+userinput_Email+"', '"+str(userinput_Price)+"')"
+
+    elif request == 'delete':
+        sql_cmd = "SELECT Eventi.Event_Name, Eventi.Event_Type, Eventi.Host, Eventi.Participants, Eventi.Date_And_Time, Eventi.Location, Eventi.Email, Eventi.Price FROM Eventi AND Eventi.Event_Name LIKE '"+userinput+"'"
+
+    return sql_cmd
+
+
 ##### Main funfction #####
 
 def application(environ, start_response):
@@ -535,29 +562,12 @@ def application(environ, start_response):
         status = '200 OK'
         print ("###################  INSERT PAGE ########################")
 
-        HttpQuery = parse_qs(environ['QUERY_STRING'])
-
-        userinput_Event_Name = HttpQuery.get('Event_Name', ['%'])[0]
-
-        userinput_Event_Type = HttpQuery.get('Event_Type', ['%'])[0]
-
-        userinput_Host = HttpQuery.get('Host', ['%'])[0]
-
-        userinput_Participants = HttpQuery.get('Participants', ['%'])[0]
-
-        userinput_Date_And_Time = HttpQuery.get('Date_And_Time', ['%'])[0]
-
-        userinput_Location = HttpQuery.get('Location', ['%'])[0]
-
-        userinput_Email = HttpQuery.get('Email', ['%'])[0]
-
-        userinput_Price = HttpQuery.get('Price', ['%'])[0]
+        userInput(parse_qs(environ['QUERY_STRING']), 'insert')
 
         # construct the SQL command (this time it's an INSERT statement)
 
-        sql_cmd = "INSERT INTO Eventi (Event_Name, Event_Type, Host, Participants, Date_And_Time, Location, Email, Price ) VALUES ('" +userinput_Event_Name+"', '"+userinput_Event_Type+"', '"+userinput_Host+"', '"+str(userinput_Participants)+"','"+str(userinput_Date_And_Time)+"', '"+userinput_Location+"',  '"+userinput_Email+"', '"+str(userinput_Price)+"')"
-        print ("+++++++++++ SQL command +++++ ", sql_cmd)
-        executeSQLCommand(sql_cmd)
+        print ("+++++++++++ SQL command +++++ ", userInput(parse_qs(environ['QUERY_STRING']), 'insert'))
+        executeSQLCommand(userInput(parse_qs(environ['QUERY_STRING']), 'insert'))
 
         sql_cmd = "SELECT Eventi.Event_Name, Eventi.Event_Type, Eventi.Host, Eventi.Participants, Eventi.Date_And_Time, Eventi.Location, Eventi.Email, Eventi.Price FROM Eventi"
 
@@ -688,3 +698,4 @@ def application(environ, start_response):
     response_headers = [('Content-Type', 'text/html'), ('Content-Length', str(len(content)))]
     start_response(status, response_headers)
     yield content.encode('utf8')
+    
