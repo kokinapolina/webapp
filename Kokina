@@ -393,8 +393,8 @@ function w3_close() {
 <br><br><br><br><br><br><br><br><br><br><br>
 
 <!-- SEARCH BAR -->
-<form action="" method="GET">
-<input type="text" placeholder="Search..">
+<form method="get" action="/club/Search">
+    <input type="text" name = "Search" placeholder="Search" >
 """
 
 eventTableStart = """
@@ -596,8 +596,26 @@ def application(environ, start_response):
         print ("+++++++++++ SQL command +++++ ", sql_cmd)
 
         content = pageStart + "LiveLoveParty - Join an event at a club" + backgroundSidebar + titleEvent + "Join an event - CLUB" + eventPageContent
+        content += """<input type="submit" value="Search name of Event">"""
+        content += eventTableStart + eventiTable(executeSQLCommand(sql_cmd)) + eventTableEnd
+
+
+    elif environ.get('PATH_INFO') == '/club/Search':
+        status = '200 OK'
+        print ("###################  SEARCH PAGE ########################")
+
+        HttpQuery = parse_qs(environ['QUERY_STRING'])
+        userinput_search = HttpQuery.get('Search', ['%'])[0]
+
+        # send a SQL command (selecting the wanted messages from the Message Table) to the SQL Server
+        sql_cmd = "SELECT * FROM Eventi WHERE (Event_type='Club' AND Event_Name LIKE '"+userinput_search+"')"
+        print ("+++++++++++ SQL command +++++ ", sql_cmd)
+
+        content = pageStart + "LiveLoveParty - Join an event at a club" + backgroundSidebar + titleEvent + "Join an event - CLUB" + eventPageContent
         content += """<input type="submit" value="Search in CLUB">"""
         content += eventTableStart + eventiTable(executeSQLCommand(sql_cmd)) + eventTableEnd
+
+
 
     elif environ.get('PATH_INFO') == '/bar':
         status = '200 OK'
@@ -698,4 +716,4 @@ def application(environ, start_response):
     response_headers = [('Content-Type', 'text/html'), ('Content-Length', str(len(content)))]
     start_response(status, response_headers)
     yield content.encode('utf8')
-    
+
