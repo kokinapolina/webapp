@@ -252,17 +252,13 @@ function w3_close() {
 </form>
 
    <br><br>
-<form method = "GET" action = '/Delete'>
-   <input type="text" name = "ID" placeholder="ID" >
-   <input type = "delete" value="Delete"></input>
-</form>
  <hr>
 
 <!--Table of Host-->
 
 <table width= 100% border=1>
   <tr>
-    <th> <b> <span style="color:white"> ID </span> </b> </th>
+    <!-- <th> <b> <span style="color:white"> ID </span> </b> </th> -->
     <th> <b> <span style="color:white">Event Name</span> </b> </th>
     <th> <b> <span style="color:white">Event Type</span> </b> </th>
     <th> <b> <span style="color:white">Host</span> </b> </th>
@@ -493,18 +489,16 @@ def eventiTable(Eventi_from_db):
     for Eventis_record in Eventi_from_db:
         # a record is a LIST of values (one value per column), so we need to access each value separately.
         # This follows the sequence in the SELECT statement above, starting with 0!
-        ID = str (Eventis_record[0])
-        Event_Name = str (Eventis_record[1])
-        Event_Type = str (Eventis_record[2])
-        Host = str (Eventis_record[3])
-        Participants = str (Eventis_record[4])
-        Date_And_Time = str (Eventis_record[5])
-        Location = str (Eventis_record[6])
-        Price = str (Eventis_record[7])
-        Email = str (Eventis_record[8])
+        Event_Name = str (Eventis_record[0])
+        Event_Type = str (Eventis_record[1])
+        Host = str (Eventis_record[2])
+        Participants = str (Eventis_record[3])
+        Date_And_Time = str (Eventis_record[4])
+        Location = str (Eventis_record[5])
+        Price = str (Eventis_record[6])
+        Email = str (Eventis_record[7])
 
         Eventi_table_string += "<tr>"
-        Eventi_table_string += """<td style="color:white">""" + ID + "</td>"
         Eventi_table_string += """<td style="color:white">""" + Event_Name + "</td>"
         Eventi_table_string += """<td style="color:white">""" + Event_Type + "</td>"
         Eventi_table_string += """<td style="color:white">""" + Host + "</td>"
@@ -515,7 +509,7 @@ def eventiTable(Eventi_from_db):
         Eventi_table_string += """<td style="color:white">""" + Email + "</td>"
         Eventi_table_string += "<tr>"
 
-        print ("++++++++++++++++++", Event_ID, Event_Name, Event_Type, Host, Participants, Date_And_Time, Location, Price, Email)
+        print ("++++++++++++++++++", Event_Name, Event_Type, Host, Participants, Date_And_Time, Location, Price, Email)
 
     return Eventi_table_string
 
@@ -542,7 +536,8 @@ def userInput(HttpQuery, request):
         sql_cmd = "INSERT INTO Eventi (Event_Name, Event_Type, Host, Participants, Date_And_Time, Location, Email, Price ) VALUES ('" +userinput_Event_Name+"', '"+userinput_Event_Type+"', '"+userinput_Host+"', '"+str(userinput_Participants)+"','"+str(userinput_Date_And_Time)+"', '"+userinput_Location+"',  '"+userinput_Email+"', '"+str(userinput_Price)+"')"
 
     elif request == 'delete':
-        sql_cmd = "SELECT Eventi.Event_Name, Eventi.Event_Type, Eventi.Host, Eventi.Participants, Eventi.Date_And_Time, Eventi.Location, Eventi.Email, Eventi.Price FROM Eventi AND Eventi.Event_Name LIKE '"+userinput+"'"
+        #sql_cmd = "SELECT Eventi.Event_Name, Eventi.Event_Type, Eventi.Host, Eventi.Participants, Eventi.Date_And_Time, Eventi.Location, Eventi.Email, Eventi.Price FROM Eventi AND Eventi.Event_Name LIKE '"+userinput+"'"
+        sql_cmd = ''
 
     return sql_cmd
 
@@ -591,7 +586,7 @@ def application(environ, start_response):
     elif environ.get('PATH_INFO') == '/hostevent':
         status = '200 OK'
         # connet to SQL data base
-        sql_cmd = "SELECT * FROM Eventi"
+        sql_cmd = "SELECT Eventi.Event_Name, Eventi.Event_Type, Eventi.Host, Eventi.Participants, Eventi.Date_And_Time, Eventi.Location, Eventi.Email, Eventi.Price FROM Eventi"
         print ("++++++++++++++++++", sql_cmd)
 
         content = pageStart + "LiveLoveParty - Host an event" + backgroundSidebar + hosteventStart + eventiTable(executeSQLCommand(sql_cmd)) + hosteventEnd
@@ -611,7 +606,7 @@ def application(environ, start_response):
         print ("+++++++++++ SQL command +++++ ", userInput(parse_qs(environ['QUERY_STRING']), 'insert'))
         executeSQLCommand(userInput(parse_qs(environ['QUERY_STRING']), 'insert'))
 
-        sql_cmd = "SELECT Event_Name, Event_Type, Host, Participants, Date_and_Time, Location, Email, Price FROM Eventi"
+        sql_cmd = "SELECT Eventi.Event_Name, Eventi.Event_Type, Eventi.Host, Eventi.Participants, Eventi.Date_And_Time, Eventi.Location, Eventi.Email, Eventi.Price FROM Eventi"
 
         content = pageStart + "LiveLoveParty - Host an event" + backgroundSidebar + hosteventStart + eventiTable(executeSQLCommand(sql_cmd)) + hosteventEnd
 
