@@ -252,6 +252,10 @@ function w3_close() {
 </form>
 
    <br><br>
+<form method = "GET" action = '/Delete'>
+   <input type="text" name = "ID" placeholder="ID" >
+   <input type = "delete" value="Delete"></input>
+</form>
  <hr>
 
 <!--Table of Host-->
