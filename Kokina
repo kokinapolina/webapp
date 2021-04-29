@@ -217,7 +217,7 @@ hosteventStart = """
 }
 </style>
 
-<h1 style="color:white"> <center>  Host an event </center></h1>
+<h1 style="color:white"> <center>  Host an event </center> </h1>
 
 <!-- PAGE CONTENT -->
 
@@ -225,7 +225,7 @@ hosteventStart = """
   <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">☰</button>
   <div class="w3-container">
   </div>
-  </div>
+</div>
 
 <script>
 function w3_open() {
@@ -249,16 +249,16 @@ function w3_close() {
       <input type="text" name = "Email" placeholder="Email" >
       <input type="text" name = "Price" placeholder="Price" >
       <input type="submit" value = "Insert" ></input>
-      </form>
+</form>
 
    <br><br>
  <hr>
 
 <!--Table of Host-->
 
-  <table width= 100% border=1>
+<table width= 100% border=1>
   <tr>
-    <th> <b> <span style="color:white"> ID </span> </b> </th>
+    <!-- <th> <b> <span style="color:white"> ID </span> </b> </th> -->
     <th> <b> <span style="color:white">Event Name</span> </b> </th>
     <th> <b> <span style="color:white">Event Type</span> </b> </th>
     <th> <b> <span style="color:white">Host</span> </b> </th>
@@ -271,15 +271,14 @@ function w3_close() {
 """
 
 hosteventEnd = """
-  </table>
+</table>
 
-  <form action="/" method="Get" target="_self">
-        <br>
+<form action="/" method="Get" target="_self">
+    <br>
 
-        <input type="submit" value="Home">
+    <input type="submit" value="Home">
 
-      </form>
-  </div>
+</form>
  <hr>
 
 </html>
@@ -317,7 +316,7 @@ article {
   <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">☰</button>
   <div class="w3-container">
   </div>
- </div>
+</div>
 
 
 <script>
@@ -500,14 +499,14 @@ def eventiTable(Eventi_from_db):
         Email = str (Eventis_record[7])
 
         Eventi_table_string += "<tr>"
-        Eventi_table_string += "<td>" + Event_Name + "</td>"
-        Eventi_table_string += "<td>" + Event_Type + "</td>"
-        Eventi_table_string += "<td>" + Host + "</td>"
-        Eventi_table_string += "<td>" + Participants + "</td>"
-        Eventi_table_string += "<td>" + Date_And_Time + "</td>"
-        Eventi_table_string += "<td>" + Location + "</td>"
-        Eventi_table_string += "<td>" + Price + "</td>"
-        Eventi_table_string += "<td>" + Email + "</td>"
+        Eventi_table_string += """<td style="color:white">""" + Event_Name + "</td>"
+        Eventi_table_string += """<td style="color:white">""" + Event_Type + "</td>"
+        Eventi_table_string += """<td style="color:white">""" + Host + "</td>"
+        Eventi_table_string += """<td style="color:white">""" + Participants + "</td>"
+        Eventi_table_string += """<td style="color:white">""" + Date_And_Time + "</td>"
+        Eventi_table_string += """<td style="color:white">""" + Location + "</td>"
+        Eventi_table_string += """<td style="color:white">""" + Price + "</td>"
+        Eventi_table_string += """<td style="color:white">""" + Email + "</td>"
         Eventi_table_string += "<tr>"
 
         print ("++++++++++++++++++", Event_Name, Event_Type, Host, Participants, Date_And_Time, Location, Price, Email)
