@@ -32,6 +32,22 @@ body {
 <div class="w3-main" style="margin-left:0px">
 </div>
 
+
+<div class="w3-teal">
+  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">☰</button>
+  <div class="w3-container">
+  </div>
+
+<script>
+function w3_open() {
+  document.getElementById("mySidebar").style.display = "block";
+}
+function w3_close() {
+  document.getElementById("mySidebar").style.display = "none";
+}
+</script>
+
+
 <!--Title of the page-->
 <style>
 h1 {
@@ -48,21 +64,6 @@ homepage = """
 <h1 style="font-size:105px; color:white;"> <center>LiveLoveParty</center> </h1>
 
 <!-- Page Content -->
-<div class="w3-teal">
-  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">☰</button>
-  <div class="w3-container">
-  </div>
-
-<script>
-function w3_open() {
-  document.getElementById("mySidebar").style.display = "block";
-}
-
-function w3_close() {
-  document.getElementById("mySidebar").style.display = "none";
-}
-</script>
-
 
 <!--Links for "join and host" button-->
 
@@ -97,7 +98,6 @@ h3 {
 
 <center> <h2 style="font-size: 35px;"> <a href="/joinevent" target="_blank">Join an event</a></h2> </center>
 
-
 <center> <h3 style="font-size: 35px;"> <a href="/hostevent" target="_blank">Host an event</a></h3>  </center>
 </div>
 </div>
@@ -117,24 +117,7 @@ joinevent = """
 
 <!-- PAGE CONTENT -->
 
-<div class="w3-teal">
-  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">☰</button>
-  <div class="w3-container">
-  </div>
-  </div>
-
-<script>
-function w3_open() {
-  document.getElementById("mySidebar").style.display = "block";
-}
-
-function w3_close() {
-  document.getElementById("mySidebar").style.display = "none";
-}
-</script>
-
 <br><br><br><br><br><br><br><br><br><br>
-
 
 <!-- IMAGES IN TABLES -->
 <table width= 100% border=0>
@@ -221,23 +204,6 @@ hosteventStart = """
 
 <!-- PAGE CONTENT -->
 
-<div class="w3-teal">
-  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">☰</button>
-  <div class="w3-container">
-  </div>
-</div>
-
-<script>
-function w3_open() {
-  document.getElementById("mySidebar").style.display = "block";
-}
-
-function w3_close() {
-  document.getElementById("mySidebar").style.display = "none";
-}
-</script>
-
-
 <br><br><br><br><br><br><br><br><br><br><br>
 <form method = "GET" action = '/Insert'>
       <input type="text" name = "Event_Name" placeholder="Event Name" >
@@ -252,10 +218,6 @@ function w3_close() {
 </form>
 
    <br><br>
-<form method = "GET" action = '/Delete'>
-   <input type="text" name = "ID" placeholder="ID" >
-   <input type = "delete" value="Delete"></input>
-</form>
  <hr>
 
 <!--Table of Host-->
@@ -290,8 +252,7 @@ hosteventEnd = """
 
 about = """
 <!--Positions,size and color of text-->
-  left: 400px;
-  top: 50px;
+  text-align: center;
   font-size:90px;
   color:white;
 }
@@ -314,25 +275,6 @@ article {
 </style>
 
 <h1>LiveLoveParty</h1>
-
-
-<div class="w3-teal">
-  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">☰</button>
-  <div class="w3-container">
-  </div>
-</div>
-
-
-<script>
-function w3_open() {
-  document.getElementById("mySidebar").style.display = "block";
-}
-
-function w3_close() {
-  document.getElementById("mySidebar").style.display = "none";
-}
-</script>
-
 
  <!-- GIF-->
 <nav>
@@ -377,21 +319,6 @@ eventPageContent = """
 </center></h1>
 
 <!-- PAGE CONTENT -->
-<div class="w3-teal">
-  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">☰</button>
-  <div class="w3-container">
-  </div>
-  </div>
-
-<script>
-function w3_open() {
-  document.getElementById("mySidebar").style.display = "block";
-}
-
-function w3_close() {
-  document.getElementById("mySidebar").style.display = "none";
-}
-</script>
 
 <br><br><br><br><br><br><br><br><br><br><br>
 
@@ -447,20 +374,68 @@ eventTableEnd = """
 
 <div class="container">
 <form>
-
   <div class="wrapper">
     <p style="color:white">Please remember! You need to be at least 18 to join:)</p>
     <p style="color:white">Please insert to join the event and contact the host via email:</p>
-    <div class="search-container">
-      <input type="text" class="search" placeholder="First Name">
-      <input type="text" class="date-from" placeholder="Last Name">
-      <input type="text" class="date-to" placeholder="Email">
-      <button type="submit" class="button">Insert</button>
-    </div>
   </div>
 </form>
 </div>
 
+<form method = "GET" action = '/InsertParticipant'>
+	  <input type="text" name = "First_Name" placeholder="First Name" >
+	  <input type="text" name = "Last_Name" placeholder="Last Name" >
+	  <input type="text" name = "Email" placeholder="Email" >
+	  <input type="text" name = "Event_ID" placeholder="Event ID" >
+
+	  <input type="submit" value = "Register" > </input>
+
+      <!-- <button type="submit" class="button">Insert</button> -->
+</form>
+
+</html>
+"""
+
+registration = """
+<!--Positions,size and color of text-->
+  text-align: center;
+  font-size:90px;
+  color:white;
+}
+
+article {
+  position: absolute;
+  left: 530px;
+  top: 250px;
+  font-size:27px;
+  color:white;
+}
+</style>
+
+<h1>LiveLoveParty</h1>
+
+
+ <!-- GIF-->
+<nav>
+  <br>
+  <br>
+  <br>
+    <br>
+     <br>
+      <br>
+      <br><br><br><br><br><br><br>
+  <img src="https://media4.giphy.com/media/Rkzqt6BWKta5qrXppM/giphy.gif" width="490px" height="250 px">
+</nav>
+
+
+<article>
+<!--Description-->
+<p>
+<br> Registration is complited successfully! <br>
+<br> Waiting for you :)
+</p>
+</article>
+
+</body>
 </html>
 """
 
@@ -469,11 +444,11 @@ def executeSQLCommand (sql_command):
 
     ##### Connect to the MySQL DB #####
 
-    password = "Uniisttoll123" # this is your MySQL database password, NOT the password you use when you log into PythonAnywhere! I told you to write it down somewhere... >:->
+    password = "Inspiration" # this is your MySQL database password, NOT the password you use when you log into PythonAnywhere! I told you to write it down somewhere... >:->
     results = ()
 
     # you'll find the info you need to enter in your Databases Tab on PythonAnywhere
-    db = MySQLdb.connect("Wichelhaus.mysql.pythonanywhere-services.com","Wichelhaus",password, "Wichelhaus$EmployeeDB")
+    db = MySQLdb.connect("kokina.mysql.pythonanywhere-services.com", "kokina", password, "kokina$webApp")
 
     cursor = db.cursor()
 
@@ -543,8 +518,7 @@ def userInput(HttpQuery, request):
         sql_cmd = "INSERT INTO Eventi (Event_Name, Event_Type, Host, Participants, Date_And_Time, Location, Email, Price ) VALUES ('" +userinput_Event_Name+"', '"+userinput_Event_Type+"', '"+userinput_Host+"', '"+str(userinput_Participants)+"','"+str(userinput_Date_And_Time)+"', '"+userinput_Location+"',  '"+userinput_Email+"', '"+str(userinput_Price)+"')"
 
     elif request == 'delete':
-        #sql_cmd = "SELECT Eventi.Event_Name, Eventi.Event_Type, Eventi.Host, Eventi.Participants, Eventi.Date_And_Time, Eventi.Location, Eventi.Email, Eventi.Price FROM Eventi AND Eventi.Event_Name LIKE '"+userinput+"'"
-        sql_cmd = ''
+        sql_cmd = "SELECT Eventi.Event_Name, Eventi.Event_Type, Eventi.Host, Eventi.Participants, Eventi.Date_And_Time, Eventi.Location, Eventi.Email, Eventi.Price FROM Eventi AND Eventi.Event_Name LIKE '"+userinput+"'"
 
     return sql_cmd
 
@@ -602,6 +576,7 @@ def application(environ, start_response):
 	    status = '200 OK'
 	    content = pageStart + "LiveLoveParty - About us" + backgroundSidebar + about
 
+
     elif environ.get('PATH_INFO') == '/Insert':
         status = '200 OK'
         print ("###################  INSERT PAGE ########################")
@@ -630,6 +605,21 @@ def application(environ, start_response):
 
         #database_delete = database_delete1 + experience_table_string + database_delete2
         #content = database_delete
+
+    elif environ.get('PATH_INFO') == '/InsertParticipant':
+        status = '200 OK'
+
+        HttpQuery = parse_qs(environ['QUERY_STRING'])
+        userinput_First_Name = HttpQuery.get('First_Name', ['%'])[0]
+        userinput_Last_Name = HttpQuery.get('Last_Name', ['%'])[0]
+        userinput_Email = HttpQuery.get('Email', ['%'])[0]
+        userinput_Event_ID = HttpQuery.get('Event_ID', ['%'])[0]
+
+        sql_cmd = "INSERT INTO Participant (First_Name, Last_Name, Email, Event_ID) VALUES ('" +userinput_First_Name+"', '"+userinput_Last_Name+"', '"+userinput_Email+"', '"+str(userinput_Event_ID)+"')"
+        print ("+++++++++++ SQL command +++++ ", sql_cmd)
+        executeSQLCommand(sql_cmd)
+
+        content = pageStart + "LiveLoveParty - Registration" + backgroundSidebar + registration
 
 
     elif environ.get('PATH_INFO') == '/club':
