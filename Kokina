@@ -393,11 +393,20 @@ function w3_close() {
 <br><br><br><br><br><br><br><br><br><br><br>
 
 <!-- SEARCH BAR -->
-<form method="get" action="club/Search">
-    <input type="text" name = "Search" placeholder="Search" >
 """
 
+searchClub = """ <form method="get" action="/club/Search"> """
+searchBar = """ <form method="get" action="/bar/Search"> """
+searchArt = """ <form method="get" action="/art/Search"> """
+searchDinner = """ <form method="get" action="/dinner/Search"> """
+searchHouseparty = """ <form method="get" action="/houseparty/Search"> """
+searchGamenight = """ <form method="get" action="/gamenight/Search"> """
+searchKaraoke = """ <form method="get" action="/karaoke/Search"> """
+searchConcert = """ <form method="get" action="/concert/Search"> """
+
 eventTableStart = """
+    <input type="text" name = "Search" placeholder="Search" >
+    <input type="submit" value="Search name of Event">
 </form>
 
 <br><br>
@@ -548,7 +557,14 @@ def eventContent(typeEvent, action, HttpQuery):
     print ("+++++++++++ SQL command +++++ ", sql_cmd)
 
     content = pageStart + "LiveLoveParty - Join an event at a " + typeEvent + backgroundSidebar + titleEvent + "Join an event - " + typeEvent + eventPageContent
-    content += """<input type="submit" value="Search name of Event">"""
+    if typeEvent == 'Club': content += searchClub
+    elif typeEvent == 'Bar': content += searchBar
+    elif typeEvent == 'Art gallery': content += searchArt
+    elif typeEvent == 'Dinner': content += searchDinner
+    elif typeEvent == 'House party': content += searchHouseparty
+    elif typeEvent == 'Gane night': content += searchGamenight
+    elif typeEvent == 'Karaoke': content += searchKaraoke
+    elif typeEvent == 'Concert': content += searchConcert
     content += eventTableStart + eventiTable(executeSQLCommand(sql_cmd)) + eventTableEnd
 
     return content
@@ -676,7 +692,7 @@ def application(environ, start_response):
         status = '200 OK'
         content = eventContent('Concert', 'Event', '')
 
-    elif environ.get('PATH_INFO') == '/conert/Search':
+    elif environ.get('PATH_INFO') == '/concert/Search':
         status = '200 OK'
         content = eventContent('Concert', 'Search', parse_qs(environ['QUERY_STRING']))
 
