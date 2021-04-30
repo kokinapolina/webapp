@@ -32,6 +32,22 @@ body {
 <div class="w3-main" style="margin-left:0px">
 </div>
 
+
+<div class="w3-teal">
+  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">☰</button>
+  <div class="w3-container">
+  </div>
+
+<script>
+function w3_open() {
+  document.getElementById("mySidebar").style.display = "block";
+}
+function w3_close() {
+  document.getElementById("mySidebar").style.display = "none";
+}
+</script>
+
+
 <!--Title of the page-->
 <style>
 h1 {
@@ -48,21 +64,6 @@ homepage = """
 <h1 style="font-size:105px; color:white;"> <center>LiveLoveParty</center> </h1>
 
 <!-- Page Content -->
-<div class="w3-teal">
-  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">☰</button>
-  <div class="w3-container">
-  </div>
-
-<script>
-function w3_open() {
-  document.getElementById("mySidebar").style.display = "block";
-}
-
-function w3_close() {
-  document.getElementById("mySidebar").style.display = "none";
-}
-</script>
-
 
 <!--Links for "join and host" button-->
 
@@ -97,7 +98,6 @@ h3 {
 
 <center> <h2 style="font-size: 35px;"> <a href="/joinevent" target="_blank">Join an event</a></h2> </center>
 
-
 <center> <h3 style="font-size: 35px;"> <a href="/hostevent" target="_blank">Host an event</a></h3>  </center>
 </div>
 </div>
@@ -117,24 +117,7 @@ joinevent = """
 
 <!-- PAGE CONTENT -->
 
-<div class="w3-teal">
-  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">☰</button>
-  <div class="w3-container">
-  </div>
-  </div>
-
-<script>
-function w3_open() {
-  document.getElementById("mySidebar").style.display = "block";
-}
-
-function w3_close() {
-  document.getElementById("mySidebar").style.display = "none";
-}
-</script>
-
 <br><br><br><br><br><br><br><br><br><br>
-
 
 <!-- IMAGES IN TABLES -->
 <table width= 100% border=0>
@@ -217,26 +200,9 @@ hosteventStart = """
 }
 </style>
 
-<h1 style="color:white"> <center>  Host an event </center></h1>
+<h1 style="color:white"> <center>  Host an event </center> </h1>
 
 <!-- PAGE CONTENT -->
-
-<div class="w3-teal">
-  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">☰</button>
-  <div class="w3-container">
-  </div>
-  </div>
-
-<script>
-function w3_open() {
-  document.getElementById("mySidebar").style.display = "block";
-}
-
-function w3_close() {
-  document.getElementById("mySidebar").style.display = "none";
-}
-</script>
-
 
 <br><br><br><br><br><br><br><br><br><br><br>
 <form method = "GET" action = '/Insert'>
@@ -249,14 +215,20 @@ function w3_close() {
       <input type="text" name = "Email" placeholder="Email" >
       <input type="text" name = "Price" placeholder="Price" >
       <input type="submit" value = "Insert" ></input>
-      </form>
+</form>
+
+<br><br>
+<form method = "GET" action = '/Delete'>
+   <input type="text" name = "ID" placeholder="ID" >
+   <input type = "submit" value="Delete"></input>
+</form>
 
    <br><br>
  <hr>
 
 <!--Table of Host-->
 
-  <table width= 100% border=1>
+<table width= 100% border=1>
   <tr>
     <th> <b> <span style="color:white"> ID </span> </b> </th>
     <th> <b> <span style="color:white">Event Name</span> </b> </th>
@@ -271,15 +243,14 @@ function w3_close() {
 """
 
 hosteventEnd = """
-  </table>
+</table>
 
-  <form action="/" method="Get" target="_self">
-        <br>
+<form action="/" method="Get" target="_self">
+    <br>
 
-        <input type="submit" value="Home">
+    <input type="submit" value="Home">
 
-      </form>
-  </div>
+</form>
  <hr>
 
 </html>
@@ -287,8 +258,7 @@ hosteventEnd = """
 
 about = """
 <!--Positions,size and color of text-->
-  left: 400px;
-  top: 50px;
+  text-align: center;
   font-size:90px;
   color:white;
 }
@@ -311,25 +281,6 @@ article {
 </style>
 
 <h1>LiveLoveParty</h1>
-
-
-<div class="w3-teal">
-  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">☰</button>
-  <div class="w3-container">
-  </div>
- </div>
-
-
-<script>
-function w3_open() {
-  document.getElementById("mySidebar").style.display = "block";
-}
-
-function w3_close() {
-  document.getElementById("mySidebar").style.display = "none";
-}
-</script>
-
 
  <!-- GIF-->
 <nav>
@@ -374,30 +325,24 @@ eventPageContent = """
 </center></h1>
 
 <!-- PAGE CONTENT -->
-<div class="w3-teal">
-  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">☰</button>
-  <div class="w3-container">
-  </div>
-  </div>
-
-<script>
-function w3_open() {
-  document.getElementById("mySidebar").style.display = "block";
-}
-
-function w3_close() {
-  document.getElementById("mySidebar").style.display = "none";
-}
-</script>
 
 <br><br><br><br><br><br><br><br><br><br><br>
 
 <!-- SEARCH BAR -->
-<form method="get" action="club/Search">
-    <input type="text" name = "Search" placeholder="Search" >
 """
 
+searchClub = """ <form method="get" action="/club/Search"> """
+searchBar = """ <form method="get" action="/bar/Search"> """
+searchArt = """ <form method="get" action="/art/Search"> """
+searchDinner = """ <form method="get" action="/dinner/Search"> """
+searchHouseparty = """ <form method="get" action="/houseparty/Search"> """
+searchGamenight = """ <form method="get" action="/gamenight/Search"> """
+searchKaraoke = """ <form method="get" action="/karaoke/Search"> """
+searchConcert = """ <form method="get" action="/concert/Search"> """
+
 eventTableStart = """
+    <input type="text" name = "Search" placeholder="Search" >
+    <input type="submit" value="Search name of Event">
 </form>
 
 <br><br>
@@ -408,6 +353,7 @@ eventTableStart = """
 <tr style="color:white">
 <th>ID</th>
 <th>Event Name</th>
+<th>Event Type</th>
 <th>Host</th>
 <th>Participants</th>
 <th>Date and Time</th>
@@ -434,20 +380,68 @@ eventTableEnd = """
 
 <div class="container">
 <form>
-
   <div class="wrapper">
     <p style="color:white">Please remember! You need to be at least 18 to join:)</p>
     <p style="color:white">Please insert to join the event and contact the host via email:</p>
-    <div class="search-container">
-      <input type="text" class="search" placeholder="First Name">
-      <input type="text" class="date-from" placeholder="Last Name">
-      <input type="text" class="date-to" placeholder="Email">
-      <button type="submit" class="button">Insert</button>
-    </div>
   </div>
 </form>
 </div>
 
+<form method = "GET" action = '/InsertParticipant'>
+	  <input type="text" name = "First_Name" placeholder="First Name" >
+	  <input type="text" name = "Last_Name" placeholder="Last Name" >
+	  <input type="text" name = "Email" placeholder="Email" >
+	  <input type="text" name = "Event_ID" placeholder="Event ID" >
+
+	  <input type="submit" value = "Register" > </input>
+
+      <!-- <button type="submit" class="button">Insert</button> -->
+</form>
+
+</html>
+"""
+
+registration = """
+<!--Positions,size and color of text-->
+  text-align: center;
+  font-size:90px;
+  color:white;
+}
+
+article {
+  position: absolute;
+  left: 530px;
+  top: 250px;
+  font-size:27px;
+  color:white;
+}
+</style>
+
+<h1>LiveLoveParty</h1>
+
+
+ <!-- GIF-->
+<nav>
+  <br>
+  <br>
+  <br>
+    <br>
+     <br>
+      <br>
+      <br><br><br><br><br><br><br>
+  <img src="https://media4.giphy.com/media/Rkzqt6BWKta5qrXppM/giphy.gif" width="490px" height="250 px">
+</nav>
+
+
+<article>
+<!--Description-->
+<p>
+<br> Registration is complited successfully! <br>
+<br> Waiting for you :)
+</p>
+</article>
+
+</body>
 </html>
 """
 
