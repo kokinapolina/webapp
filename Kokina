@@ -217,6 +217,12 @@ hosteventStart = """
       <input type="submit" value = "Insert" ></input>
 </form>
 
+<br><br>
+<form method = "GET" action = '/Delete'>
+   <input type="text" name = "ID" placeholder="ID" >
+   <input type = "submit" value="Delete"></input>
+</form>
+
    <br><br>
  <hr>
 
@@ -522,6 +528,16 @@ def userInput(HttpQuery, request):
 
     return sql_cmd
 
+def userinput(HttpQuery, request):
+
+    userinput_ID = HttpQuery.get('ID', ['%'])[0]
+
+    if request == 'delete':
+        sql_cmd = "DELETE FROM Eventi WHERE Eventi.ID like '"+str(userinput_ID)+"'"
+
+    return sql_cmd
+
+
 
 def eventContent(typeEvent, action, HttpQuery):
     if action == 'Event':
@@ -571,6 +587,22 @@ def application(environ, start_response):
         print ("++++++++++++++++++", sql_cmd)
 
         content = pageStart + "LiveLoveParty - Host an event" + backgroundSidebar + hosteventStart + eventiTable(executeSQLCommand(sql_cmd)) + hosteventEnd
+
+elif environ.get('PATH_INFO') == '/Delete':
+        status = '200 OK'
+        print ("###################  DELETE PAGE ########################")
+
+        userinput(parse_qs(environ['QUERY_STRING']), 'delete')
+
+        sql_cmd = "DELETE FROM Eventi WHERE Eventi.ID like '"+str(userinput)+"'"
+
+        content = pageStart + "LiveLoveParty - Host an event" + backgroundSidebar + hosteventStart + eventiTable(executeSQLCommand(sql_cmd)) + hosteventEnd
+
+
+        # construct the SQL command (this time it's a DELETE statement)
+
+        print ("+++++++++++ SQL command +++++ ", userInput('delete'))
+        executeSQLCommand(sql_cmd)
 
     elif environ.get('PATH_INFO') == '/about':
 	    status = '200 OK'
