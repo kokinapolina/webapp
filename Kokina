@@ -1,3 +1,457 @@
+import MySQLdb
+from urllib.parse import parse_qs
+
+pageStart = """ <html>
+<head>
+
+<meta charset="utf-8"/>
+
+  <title>
+"""
+
+backgroundSidebar = """ </title>
+</head>
+
+<body>
+
+<!--Background Picture-->
+<style>
+body {
+  background-image: url('https://www.party.de/magazin/wp-content/uploads/2020/05/Online-Party.jpg');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+}
+</style>
+
+<!-- Sidebar -->
+<div class="w3-sidebar w3-bar-block w3-border-right" style="display:none" id="mySidebar">
+  <button onclick="w3_close()" class="w3-bar-item w3-large">Close &times;</button>
+
+  <a href="/" class="w3-bar-item w3-button"> Home </a>
+  <a href="/about" class="w3-bar-item w3-button"> About us </a>
+</div>
+
+<div class="w3-main" style="margin-left:0px">
+</div>
+
+
+<div class="w3-teal">
+  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">☰</button>
+  <div class="w3-container">
+  </div>
+
+<script>
+function w3_open() {
+  document.getElementById("mySidebar").style.display = "block";
+}
+function w3_close() {
+  document.getElementById("mySidebar").style.display = "none";
+}
+</script>
+
+
+<!--Title of the page-->
+<style>
+h1 {
+  position: absolute;
+"""
+
+homepage = """
+  left: 340px;
+  top: 225px;
+  text-align:center;
+}
+</style>
+
+<h1 style="font-size:105px; color:white;"> <center>LiveLoveParty</center> </h1>
+
+<!-- Page Content -->
+
+<!--Links for "join and host" button-->
+
+<style>
+a:link, a:visited {
+  background-color: lightgray;
+  color: black;
+  border: 2px goldenrod;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+
+a:hover, a:active {
+  background-color: goldenrod;
+  color: white;
+}
+
+h2 {
+  position: absolute;
+  left: 405px;
+  top: 457px;
+}
+h3 {
+  position: absolute;
+  left: 700px;
+  top: 450px;
+}
+</style>
+<!-- Link reinmachen von Julia -->
+
+<center> <h2 style="font-size: 35px;"> <a href="/joinevent" target="_blank">Join an event</a></h2> </center>
+
+<center> <h3 style="font-size: 35px;"> <a href="/hostevent" target="_blank">Host an event</a></h3>  </center>
+</div>
+</div>
+
+</body>
+</html>
+"""
+
+joinevent = """
+  left: 490px;
+  top: 50px;
+  font-size:70px;
+}
+</style>
+
+<h1 style="color:white"> <center> Join an event </center></h1>
+
+<!-- PAGE CONTENT -->
+
+<br><br><br><br><br><br><br><br><br><br>
+
+<!-- IMAGES IN TABLES -->
+<table width= 100% border=0>
+
+<tr>
+
+<th>
+  <a href="/club">
+    <img src="https://www.rbb24.de/content/dam/rbb/rbb/rbb24/2020/2020_10/dpa-account/119763669.jpg.jpg/size=708x398.jpg" alt="CLUB" width="300" height="200">
+  </a>
+ <div style="color:white">CLUB</div>
+</th>
+
+<th>
+  <a href="/bar">
+    <img src="https://static.duesseldorf-tonight.de/thumbs/img/News/8/03/05/10/p/p_pano/team-der-boston-bar-zeigt-kampfgeist-aufgeben-kommt-nicht-in-frage-1005038.jpg" alt="BAR" width="300" height="200">
+  </a>
+  <div style="color:white">BAR</div>
+</th>
+
+<th>
+  <a href="/art">
+    <img src="https://iadsb.tmgrup.com.tr/61c5f5/1200/627/0/512/800/930?u=https://idsb.tmgrup.com.tr/2019/12/22/1577016108432.jpg" alt="ART GALLERY" width="300" height="200">
+  </a>
+  <div style="color:white">ART GALLERY</div>
+</th>
+
+<!--finished-->
+<th>
+  <a href="/dinner">
+    <img src="https://www.bistum-aachen.de/export/sites/Bistum-Aachen/portal-bistum-aachen/.galleries/images/rawpixel-754045-unsplash.jpg_792247553.jpg" alt="RUNNING DINNER" width="300" height="200">
+  </a>
+ <div style="color:white">DINNER</div>
+</th>
+
+</tr>
+
+<!-- NEW TABLE ROW -->
+
+<tr>
+
+<th>
+  <a href="/houseparty">
+    <img src="https://www.sickchirpse.com/wp-content/uploads/2020/05/party.jpeg" alt="HOUSE PARTY" width="300" height="200">
+  </a>
+  <div style="color:white">HOUSE PARTY</div>
+</th>
+
+<th>
+  <a href="/gamenight">
+    <img src="https://t3.ftcdn.net/jpg/02/75/50/00/360_F_275500010_PI6TG940EeoAgVsT1w7Sd8MvNhtekRB0.jpg" alt="SHISHA LOUNGE" width="300" height="200">
+  </a>
+  <div style="color:white">GAME NIGHT</div>
+</th>
+
+<th>
+  <a href="/karaoke">
+    <img src="https://www.delamar.de/wp-content/uploads/2020/03/karaoke.jpg" alt="KARAOKE" width="300" height="200">
+  </a>
+  <div style="color:white">KARAOKE</div>
+</th>
+
+<th>
+  <a href="/concert">
+    <img src="https://assets.rebelmouse.io/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpbWFnZSI6Imh0dHBzOi8vbWVkaWEucmJsLm1zL2ltYWdlP3U9JTJGZmlsZXMlMkYyMDE2JTJGMTAlMkYwMSUyRjYzNjEwODk0NjAzMzUxNzg4My00NzIxOTY5ODZfQWxnaWVyczEtbWluLmpwZyZobz1odHRwcyUzQSUyRiUyRmF6NjE2NTc4LnZvLm1zZWNuZC5uZXQmcz01MTQmaD0wNDEzMzliMjMxNjMxMDFlNWE2ZWZjZWQ4ZWMwM2RiZDM0ZWVhODEzNThiNzRkMmJmYTI2OWUxZThiODUyYmRkJnNpemU9OTgweCZjPTIwMzYyMzI3MTEiLCJleHBpcmVzX2F0IjoxNjc2NTY3NzQ1fQ.1ppCkdXwhiuxZNKdA4DXb8y6K8AH7eF5sijkls3TRvg/img.jpg?width=1200&amp;height=628" alt="CONCERT" width="300" height="200">
+  </a>
+  <div style="color:white">CONCERT</div>
+</th>
+
+</tr>
+</table>
+
+</html>
+"""
+
+hosteventStart = """
+  left: 450px;
+  top: 50px;
+  font-size:70px;
+}
+</style>
+
+<h1 style="color:white"> <center>  Host an event </center> </h1>
+
+<!-- PAGE CONTENT -->
+
+<br><br><br><br><br><br><br><br><br><br><br>
+<form method = "GET" action = '/Insert'>
+      <input type="text" name = "Event_Name" placeholder="Event Name" >
+      <input type="text" name = "Event_Type"  placeholder="Event Type" >
+      <input type="text" name = "Host"  placeholder="Host" >
+      <input type="text" name = "Participants" placeholder="Participants" >
+      <input type="text" name = "Free_Places" placeholder="Free Places" >
+      <input type="text" name = "Date_And_Time"  placeholder="Date and Time" >
+      <input type="text" name = "Location" placeholder="Location" >
+      <input type="text" name = "Email" placeholder="Email" >
+      <input type="text" name = "Price" placeholder="Price" >
+      <input type="submit" value = "Insert" ></input>
+</form>
+
+<br><br>
+<form method = "GET" action = '/Delete'>
+   <input type="text" name = "ID" placeholder="ID" >
+   <input type = "submit" value="Delete"></input>
+</form>
+
+   <br><br>
+ <hr>
+
+<!--Table of Host-->
+
+<table width= 100% border=1>
+  <tr>
+    <th> <b> <span style="color:white"> ID </span> </b> </th>
+    <th> <b> <span style="color:white">Event Name</span> </b> </th>
+    <th> <b> <span style="color:white">Event Type</span> </b> </th>
+    <th> <b> <span style="color:white">Host</span> </b> </th>
+    <th> <b> <span style="color:white">Participants</span></b></th>
+    <th> <b> <span style="color:white">Free Places</span></b></th>
+    <th> <b> <span style="color:white">Date and Time</span></b></th>
+    <th> <b> <span style="color:white">Location</span></b></th>
+    <th> <b> <span style="color:white">Email</span></b></th>
+    <th> <b> <span style="color:white">Price</span></b></th>
+  </tr>
+"""
+
+hosteventEnd = """
+</table>
+
+<form action="/" method="Get" target="_self">
+    <br>
+
+    <input type="submit" value="Home">
+
+</form>
+ <hr>
+
+</html>
+"""
+
+about = """
+<!--Positions,size and color of text-->
+  text-align: center;
+  font-size:90px;
+  color:white;
+}
+
+h2 {
+  position: absolute;
+  left: 560px;
+  top: 170px;
+  font-size:50px;
+  color:white;
+}
+
+article {
+  position: absolute;
+  left: 530px;
+  top: 320px;
+  font-size:27px;
+  color:white;
+}
+</style>
+
+<h1>LiveLoveParty</h1>
+
+ <!-- GIF-->
+<nav>
+  <br>
+  <br>
+  <br>
+    <br>
+     <br>
+      <br>
+      <br>
+      <br>
+      <br><br><br><br><br><br><br>
+  <img src="https://media4.giphy.com/media/Rkzqt6BWKta5qrXppM/giphy.gif" width="490px" height="250 px">
+</nav>
+
+<!--Headline for text-->
+  <h2>-About us-</h2>
+
+<article>
+<!--Description-->
+<p>
+Our goal is to connect you with the best people and give you a wonderful evening at the event of your choice. Also we're dedicated to offer a space online for presenting your event and inviting new people.<br>
+<br> We hope you enjoy and have great time with love your LiveLoveParty team:<br>
+<br>Rani, Fabian, Polina, Beatrice, Julia and Johanna
+</p>
+</article>
+
+</body>
+</html>
+"""
+
+titleEvent = """
+    top: 50px;
+    font-size:70px;
+}
+</style>
+
+<h1 style="color:white"> <center>
+"""
+
+eventPageContent = """
+</center></h1>
+
+<!-- PAGE CONTENT -->
+
+<br><br><br><br><br><br><br><br><br><br><br>
+
+<!-- SEARCH BAR -->
+"""
+
+searchClub = """ <form method="get" action="/club/Search"> """
+searchBar = """ <form method="get" action="/bar/Search"> """
+searchArt = """ <form method="get" action="/art/Search"> """
+searchDinner = """ <form method="get" action="/dinner/Search"> """
+searchHouseparty = """ <form method="get" action="/houseparty/Search"> """
+searchGamenight = """ <form method="get" action="/gamenight/Search"> """
+searchKaraoke = """ <form method="get" action="/karaoke/Search"> """
+searchConcert = """ <form method="get" action="/concert/Search"> """
+
+eventTableStart = """
+    <input type="text" name = "Search" placeholder="Search" >
+    <input type="submit" value="Search name of Event">
+</form>
+
+<br><br>
+
+<!--EVENT TABLE -->
+<hr>
+<table width=100% border=1>
+<tr style="color:white">
+<th>ID</th>
+<th>Event Name</th>
+<th>Event Type</th>
+<th>Host</th>
+<th>Participants</th>
+<th>Free Places</th>
+<th>Date and Time</th>
+<th>Location</th>
+<th>Email</th>
+<th>Price</th>
+</tr>
+"""
+
+eventTableEnd = """
+</table>
+
+
+<table border=1>
+<tr style="color:white">
+<th></th>
+</tr>
+</table>
+<hr>
+
+<br><br>
+
+<!--- INSERT BARS FOR ATTENDEE-->
+
+<div class="container">
+<form>
+  <div class="wrapper">
+    <p style="color:white">Please remember! You need to be at least 18 to join:)</p>
+    <p style="color:white">Please insert to join the event and contact the host via email:</p>
+  </div>
+</form>
+</div>
+
+<form method = "GET" action = '/InsertParticipant'>
+	  <input type="text" name = "First_Name" placeholder="First Name" >
+	  <input type="text" name = "Last_Name" placeholder="Last Name" >
+	  <input type="text" name = "Email" placeholder="Email" >
+	  <input type="text" name = "Event_ID" placeholder="Event ID" >
+
+	  <input type="submit" value = "Register" > </input>
+
+      <!-- <button type="submit" class="button">Insert</button> -->
+</form>
+
+</html>
+"""
+
+registration = """
+<!--Positions,size and color of text-->
+  text-align: center;
+  font-size:90px;
+  color:white;
+}
+
+article {
+  position: absolute;
+  left: 530px;
+  top: 250px;
+  font-size:27px;
+  color:white;
+}
+</style>
+
+<h1>LiveLoveParty</h1>
+
+
+ <!-- GIF-->
+<nav>
+  <br>
+  <br>
+  <br>
+    <br>
+     <br>
+      <br>
+      <br><br><br><br><br><br><br>
+  <img src="https://media4.giphy.com/media/Rkzqt6BWKta5qrXppM/giphy.gif" width="490px" height="250 px">
+</nav>
+
+
+<article>
+<!--Description-->
+<p>
+<br> Registration is complited successfully! <br>
+<br> Waiting for you :)
+</p>
+</article>
+
+</body>
+</html>
+"""
+
+
 def executeSQLCommand (sql_command):
 
     ##### Connect to the MySQL DB #####
