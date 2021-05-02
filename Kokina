@@ -588,7 +588,7 @@ def application(environ, start_response):
 
         content = pageStart + "LiveLoveParty - Host an event" + backgroundSidebar + hosteventStart + eventiTable(executeSQLCommand(sql_cmd)) + hosteventEnd
 
-elif environ.get('PATH_INFO') == '/Delete':
+	elif environ.get('PATH_INFO') == '/Delete':
         status = '200 OK'
         print ("###################  DELETE PAGE ########################")
 
