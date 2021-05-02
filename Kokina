@@ -3,6 +3,7 @@ from urllib.parse import parse_qs
 
 pageStart = """ <html>
 <head>
+<meta charset="utf-8"/>
   <title>
 """
 
