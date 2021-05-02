@@ -524,7 +524,7 @@ def userInput(HttpQuery, request):
         sql_cmd = "INSERT INTO Eventi (Event_Name, Event_Type, Host, Participants, Date_And_Time, Location, Email, Price ) VALUES ('" +userinput_Event_Name+"', '"+userinput_Event_Type+"', '"+userinput_Host+"', '"+str(userinput_Participants)+"','"+str(userinput_Date_And_Time)+"', '"+userinput_Location+"',  '"+userinput_Email+"', '"+str(userinput_Price)+"')"
 
     elif request == 'delete':
-        sql_cmd = "SELECT Eventi.Event_Name, Eventi.Event_Type, Eventi.Host, Eventi.Participants, Eventi.Date_And_Time, Eventi.Location, Eventi.Email, Eventi.Price FROM Eventi AND Eventi.Event_Name LIKE '"+userinput+"'"
+        sql_cmd = "SELECT Eventi.Event_Name, Eventi.Event_Type, Eventi.Host, Eventi.Participants, Eventi.Date_And_Time, Eventi.Location, Eventi.Email, Eventi.Price FROM Eventi AND Eventi.ID LIKE '"+userinput+"'"
 
     return sql_cmd
 
@@ -588,7 +588,8 @@ def application(environ, start_response):
 
         content = pageStart + "LiveLoveParty - Host an event" + backgroundSidebar + hosteventStart + eventiTable(executeSQLCommand(sql_cmd)) + hosteventEnd
 
-	elif environ.get('PATH_INFO') == '/Delete':
+
+    elif environ.get('PATH_INFO') == '/delete':
         status = '200 OK'
         print ("###################  DELETE PAGE ########################")
 
