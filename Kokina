@@ -210,6 +210,7 @@ hosteventStart = """
       <input type="text" name = "Event_Type"  placeholder="Event Type" >
       <input type="text" name = "Host"  placeholder="Host" >
       <input type="text" name = "Participants" placeholder="Participants" >
+      <input type="text" name = "Free_Places" placeholder="Free Places" >
       <input type="text" name = "Date_And_Time"  placeholder="Date and Time" >
       <input type="text" name = "Location" placeholder="Location" >
       <input type="text" name = "Email" placeholder="Email" >
@@ -235,6 +236,7 @@ hosteventStart = """
     <th> <b> <span style="color:white">Event Type</span> </b> </th>
     <th> <b> <span style="color:white">Host</span> </b> </th>
     <th> <b> <span style="color:white">Participants</span></b></th>
+    <th> <b> <span style="color:white">Free Places</span></b></th>
     <th> <b> <span style="color:white">Date and Time</span></b></th>
     <th> <b> <span style="color:white">Location</span></b></th>
     <th> <b> <span style="color:white">Email</span></b></th>
@@ -356,6 +358,7 @@ eventTableStart = """
 <th>Event Type</th>
 <th>Host</th>
 <th>Participants</th>
+<th>Free Places</th>
 <th>Date and Time</th>
 <th>Location</th>
 <th>Email</th>
@@ -480,10 +483,11 @@ def eventiTable(Eventi_from_db):
         Event_Type = str (Eventis_record[2])
         Host = str (Eventis_record[3])
         Participants = str (Eventis_record[4])
-        Date_And_Time = str (Eventis_record[5])
-        Location = str (Eventis_record[6])
-        Price = str (Eventis_record[7])
-        Email = str (Eventis_record[8])
+	Free_Places = str (Eventis_record[5])
+        Date_And_Time = str (Eventis_record[6])
+        Location = str (Eventis_record[7])
+        Price = str (Eventis_record[8])
+        Email = str (Eventis_record[9])
 
         Eventi_table_string += "<tr>"
         Eventi_table_string += """<td style="color:white">""" + ID + "</td>"
@@ -491,6 +495,7 @@ def eventiTable(Eventi_from_db):
         Eventi_table_string += """<td style="color:white">""" + Event_Type + "</td>"
         Eventi_table_string += """<td style="color:white">""" + Host + "</td>"
         Eventi_table_string += """<td style="color:white">""" + Participants + "</td>"
+	Eventi_table_string += """<td style="color:white">""" + Free_Places + "</td>"
         Eventi_table_string += """<td style="color:white">""" + Date_And_Time + "</td>"
         Eventi_table_string += """<td style="color:white">""" + Location + "</td>"
         Eventi_table_string += """<td style="color:white">""" + Price + "</td>"
@@ -511,6 +516,8 @@ def userInput(HttpQuery, request):
     userinput_Host = HttpQuery.get('Host', ['%'])[0]
 
     userinput_Participants = HttpQuery.get('Participants', ['%'])[0]
+    
+    userinput_Free_Places = HttpQuery.get('Free_Places', ['%'])[0]
 
     userinput_Date_And_Time = HttpQuery.get('Date_And_Time', ['%'])[0]
 
@@ -521,10 +528,10 @@ def userInput(HttpQuery, request):
     userinput_Price = HttpQuery.get('Price', ['%'])[0]
 
     if request == 'insert':
-        sql_cmd = "INSERT INTO Eventi (Event_Name, Event_Type, Host, Participants, Date_And_Time, Location, Email, Price ) VALUES ('" +userinput_Event_Name+"', '"+userinput_Event_Type+"', '"+userinput_Host+"', '"+str(userinput_Participants)+"','"+str(userinput_Date_And_Time)+"', '"+userinput_Location+"',  '"+userinput_Email+"', '"+str(userinput_Price)+"')"
+        sql_cmd = "INSERT INTO Eventi (Event_Name, Event_Type, Host, Participants, Free_Places, Date_And_Time, Location, Email, Price ) VALUES ('" +userinput_Event_Name+"', '"+userinput_Event_Type+"', '"+userinput_Host+"', '"+str(userinput_Participants)+"','"+str(userinput_Free_Places)+"','"+str(userinput_Date_And_Time)+"', '"+userinput_Location+"',  '"+userinput_Email+"', '"+str(userinput_Price)+"')"
 
     elif request == 'delete':
-        sql_cmd = "SELECT Eventi.Event_Name, Eventi.Event_Type, Eventi.Host, Eventi.Participants, Eventi.Date_And_Time, Eventi.Location, Eventi.Email, Eventi.Price FROM Eventi AND Eventi.ID LIKE '"+userinput+"'"
+        sql_cmd = "SELECT Eventi.Event_Name, Eventi.Event_Type, Eventi.Host, Eventi.Participants, Eventi.Free_Places, Eventi.Date_And_Time, Eventi.Location, Eventi.Email, Eventi.Price FROM Eventi AND Eventi.ID LIKE '"+userinput+"'"
 
     return sql_cmd
 
