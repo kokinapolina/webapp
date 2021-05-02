@@ -3,6 +3,9 @@ from urllib.parse import parse_qs
 
 pageStart = """ <html>
 <head>
+
+<meta charset="utf-8"/>
+
   <title>
 """
 
@@ -210,6 +213,7 @@ hosteventStart = """
       <input type="text" name = "Event_Type"  placeholder="Event Type" >
       <input type="text" name = "Host"  placeholder="Host" >
       <input type="text" name = "Participants" placeholder="Participants" >
+      <input type="text" name = "Free_Places" placeholder="Free Places" >
       <input type="text" name = "Date_And_Time"  placeholder="Date and Time" >
       <input type="text" name = "Location" placeholder="Location" >
       <input type="text" name = "Email" placeholder="Email" >
@@ -235,6 +239,7 @@ hosteventStart = """
     <th> <b> <span style="color:white">Event Type</span> </b> </th>
     <th> <b> <span style="color:white">Host</span> </b> </th>
     <th> <b> <span style="color:white">Participants</span></b></th>
+    <th> <b> <span style="color:white">Free Places</span></b></th>
     <th> <b> <span style="color:white">Date and Time</span></b></th>
     <th> <b> <span style="color:white">Location</span></b></th>
     <th> <b> <span style="color:white">Email</span></b></th>
@@ -356,6 +361,7 @@ eventTableStart = """
 <th>Event Type</th>
 <th>Host</th>
 <th>Participants</th>
+<th>Free Places</th>
 <th>Date and Time</th>
 <th>Location</th>
 <th>Email</th>
@@ -444,4 +450,3 @@ article {
 </body>
 </html>
 """
-
