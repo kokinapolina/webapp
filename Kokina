@@ -483,7 +483,7 @@ def eventiTable(Eventi_from_db):
         Event_Type = str (Eventis_record[2])
         Host = str (Eventis_record[3])
         Participants = str (Eventis_record[4])
-	Free_Places = str (Eventis_record[5])
+        Free_Places = str (Eventis_record[5])
         Date_And_Time = str (Eventis_record[6])
         Location = str (Eventis_record[7])
         Price = str (Eventis_record[8])
@@ -495,7 +495,7 @@ def eventiTable(Eventi_from_db):
         Eventi_table_string += """<td style="color:white">""" + Event_Type + "</td>"
         Eventi_table_string += """<td style="color:white">""" + Host + "</td>"
         Eventi_table_string += """<td style="color:white">""" + Participants + "</td>"
-	Eventi_table_string += """<td style="color:white">""" + Free_Places + "</td>"
+        Eventi_table_string += """<td style="color:white">""" + Free_Places + "</td>"
         Eventi_table_string += """<td style="color:white">""" + Date_And_Time + "</td>"
         Eventi_table_string += """<td style="color:white">""" + Location + "</td>"
         Eventi_table_string += """<td style="color:white">""" + Price + "</td>"
@@ -516,7 +516,7 @@ def userInput(HttpQuery, request):
     userinput_Host = HttpQuery.get('Host', ['%'])[0]
 
     userinput_Participants = HttpQuery.get('Participants', ['%'])[0]
-    
+
     userinput_Free_Places = HttpQuery.get('Free_Places', ['%'])[0]
 
     userinput_Date_And_Time = HttpQuery.get('Date_And_Time', ['%'])[0]
@@ -530,20 +530,7 @@ def userInput(HttpQuery, request):
     if request == 'insert':
         sql_cmd = "INSERT INTO Eventi (Event_Name, Event_Type, Host, Participants, Free_Places, Date_And_Time, Location, Email, Price ) VALUES ('" +userinput_Event_Name+"', '"+userinput_Event_Type+"', '"+userinput_Host+"', '"+str(userinput_Participants)+"','"+str(userinput_Free_Places)+"','"+str(userinput_Date_And_Time)+"', '"+userinput_Location+"',  '"+userinput_Email+"', '"+str(userinput_Price)+"')"
 
-    elif request == 'delete':
-        sql_cmd = "SELECT Eventi.Event_Name, Eventi.Event_Type, Eventi.Host, Eventi.Participants, Eventi.Free_Places, Eventi.Date_And_Time, Eventi.Location, Eventi.Email, Eventi.Price FROM Eventi AND Eventi.ID LIKE '"+userinput+"'"
-
     return sql_cmd
-
-def userinput(HttpQuery, request):
-
-    userinput_ID = HttpQuery.get('ID', ['%'])[0]
-
-    if request == 'delete':
-        sql_cmd = "DELETE FROM Eventi WHERE Eventi.ID like '"+str(userinput_ID)+"'"
-
-    return sql_cmd
-
 
 
 def eventContent(typeEvent, action, HttpQuery):
@@ -595,23 +582,6 @@ def application(environ, start_response):
 
         content = pageStart + "LiveLoveParty - Host an event" + backgroundSidebar + hosteventStart + eventiTable(executeSQLCommand(sql_cmd)) + hosteventEnd
 
-
-    elif environ.get('PATH_INFO') == '/delete':
-        status = '200 OK'
-        print ("###################  DELETE PAGE ########################")
-
-        userinput(parse_qs(environ['QUERY_STRING']), 'delete')
-
-        sql_cmd = "DELETE FROM Eventi WHERE Eventi.ID like '"+str(userinput)+"'"
-
-        content = pageStart + "LiveLoveParty - Host an event" + backgroundSidebar + hosteventStart + eventiTable(executeSQLCommand(sql_cmd)) + hosteventEnd
-
-
-        # construct the SQL command (this time it's a DELETE statement)
-
-        print ("+++++++++++ SQL command +++++ ", userInput('delete'))
-        executeSQLCommand(sql_cmd)
-
     elif environ.get('PATH_INFO') == '/about':
 	    status = '200 OK'
 	    content = pageStart + "LiveLoveParty - About us" + backgroundSidebar + about
@@ -636,15 +606,15 @@ def application(environ, start_response):
         status = '200 OK'
         print ("###################  DELETE PAGE ########################")
 
-        # construct the SQL command (this time it's a DELETE statement)
+        HttpQuery = parse_qs(environ['QUERY_STRING'])
+        userinput_ID = HttpQuery.get('ID', ['%'])[0]
 
-        print ("+++++++++++ SQL command +++++ ", userInput('delete'))
+        sql_cmd = "DELETE FROM Eventi WHERE Eventi.ID like '"+str(userinput_ID)+"'"
         executeSQLCommand(sql_cmd)
 
-        # sql_cmd = "DELETE FROM Eventi WHERE Eventi.Event_Name LIKE '"+userinput_delete_Event_Name"'"
+        sql_cmd = "SELECT * FROM Eventi"
 
-        #database_delete = database_delete1 + experience_table_string + database_delete2
-        #content = database_delete
+        content = pageStart + "LiveLoveParty - Host an event" + backgroundSidebar + hosteventStart + eventiTable(executeSQLCommand(sql_cmd)) + hosteventEnd
 
     elif environ.get('PATH_INFO') == '/InsertParticipant':
         status = '200 OK'
@@ -657,6 +627,9 @@ def application(environ, start_response):
 
         sql_cmd = "INSERT INTO Participant (First_Name, Last_Name, Email, Event_ID) VALUES ('" +userinput_First_Name+"', '"+userinput_Last_Name+"', '"+userinput_Email+"', '"+str(userinput_Event_ID)+"')"
         print ("+++++++++++ SQL command +++++ ", sql_cmd)
+        executeSQLCommand(sql_cmd)
+
+        sql_cmd = "UPDATE Eventi SET Free_Places = Free_Places - 1 where ID = '"+str(userinput_Event_ID)+"'"
         executeSQLCommand(sql_cmd)
 
         content = pageStart + "LiveLoveParty - Registration" + backgroundSidebar + registration
